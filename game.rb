@@ -32,8 +32,8 @@ class Game
   end
 
   def post_answer
-    "#{answer}\nКомментарий: #{comment}"
     @asked = false
+    "#{answer}\nКомментарий: #{comment}"
   end
 
   def check_suggestion(suggested)

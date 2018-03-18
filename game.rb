@@ -4,6 +4,7 @@ require 'uri'
 require 'nokogiri'
 require 'logger'
 require 'open-uri'
+require 'unicode_utils'
 
 # noinspection RubyClassVariableUsageInspection
 class Game
@@ -34,17 +35,17 @@ class Game
     "*Вопрос*: #{remove_shit(@question.css('Question'))}"
   end
 
-  def post_answer
-    @asked = false
+  def post_answer(finished: true)
+    @asked = false if finished
     "*Ответ*: #{answer}\n*Комментарий*: #{comment}"
   end
 
   def check_suggestion(suggested)
     if match?(suggested, answer)
       @asked = false
-      "\"#{suggested}\" - это правильный ответ!\n*Комментарий*: #{comment}"
+      "\"*#{suggested}*\" - это правильный ответ!\n*Комментарий*: #{comment}"
     else
-      "\"#{suggested}\" - это неправильный ответ."
+      "\"*#{suggested}*\" - это неправильный ответ."
     end
   end
 
@@ -59,8 +60,8 @@ class Game
   end
 
   def match?(expected_raw, actual_raw)
-    expected = expected_raw.downcase
-    actual = actual_raw.downcase
+    expected = UnicodeUtils.downcase(expected_raw)
+    actual = UnicodeUtils.downcase(actual_raw)
     matched = expected == actual
     @@logger.info("Suggested: #{expected}, answer is: #{actual}. I think it is #{matched}")
     matched
@@ -71,7 +72,8 @@ class Game
   end
 
   def comment
-    comment = remove_shit(@question.css('Comments'))
-    comment = 'Отсутствует :(' if comment.empty?
+    remove_shit(@question.css('Comments')).empty?
+    comment = 'Отсутствует :(' if comment
+    comment
   end
 end

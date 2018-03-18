@@ -23,6 +23,7 @@ GEM
       inflecto
       virtus
     thread_safe (0.3.6)
+    unicode_utils (1.4.0)
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -35,6 +36,7 @@ PLATFORMS
 DEPENDENCIES
   nokogiri
   telegram-bot-ruby
+  unicode_utils
 
 BUNDLED WITH
    1.16.1

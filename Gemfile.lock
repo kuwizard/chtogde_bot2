@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/PavelKulagin/telegram-bot-ruby.git
-  revision: c721759b434afb4bcb64bc4daa765ef3ba1b0521
+  revision: ca770a47c59bf631c3179f282cf0be54594f86db
   branch: 177-bot_crashed_after_nil_message
   specs:
     telegram-bot-ruby (0.8.6.1)

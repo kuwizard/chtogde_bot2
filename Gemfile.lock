@@ -1,3 +1,13 @@
+GIT
+  remote: https://github.com/PavelKulagin/telegram-bot-ruby.git
+  revision: c721759b434afb4bcb64bc4daa765ef3ba1b0521
+  branch: 177-bot_crashed_after_nil_message
+  specs:
+    telegram-bot-ruby (0.8.6.1)
+      faraday
+      inflecto
+      virtus
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -18,10 +28,6 @@ GEM
     multipart-post (2.0.0)
     nokogiri (1.8.0)
       mini_portile2 (~> 2.2.0)
-    telegram-bot-ruby (0.8.6.1)
-      faraday
-      inflecto
-      virtus
     thread_safe (0.3.6)
     unicode_utils (1.4.0)
     virtus (1.0.5)
@@ -35,7 +41,7 @@ PLATFORMS
 
 DEPENDENCIES
   nokogiri
-  telegram-bot-ruby
+  telegram-bot-ruby!
   unicode_utils
 
 BUNDLED WITH

@@ -12,9 +12,7 @@ class Game
 
   URL = 'https://db.chgk.info/xml/random/limit1'
 
-  attr_accessor :question, :asked, :game_is_on
-
-  @@logger = Logger.new(STDOUT)
+  attr_accessor :question, :asked, :game_is_on, :logger
 
   def start
     @game_is_on = true
@@ -35,9 +33,10 @@ class Game
     "*Вопрос*: #{remove_shit(@question.css('Question'))}"
   end
 
-  def post_answer(finished: true)
+  def post_answer(finished: true, to_last: false)
     @asked = false if finished
-    "*Ответ*: #{answer}\n*Комментарий*: #{comment}"
+    add_to_last = to_last ? ' к предыдущему вопросу' : ''
+    "*Ответ#{add_to_last}*: #{answer}\n*Комментарий*: #{comment}"
   end
 
   def check_suggestion(suggested)
@@ -56,14 +55,14 @@ class Game
   private
 
   def remove_shit(text)
-    text.to_s.gsub(/<.*?>/, '').gsub(/\r/, ' ').gsub(/\n/, ' ').gsub(/.$/, '')
+    text.to_s.gsub(/<.*?>/, '').gsub(/\r/, ' ').gsub(/\n/, ' ').gsub(/\.$/, '')
   end
 
   def match?(expected_raw, actual_raw)
     expected = UnicodeUtils.downcase(expected_raw)
     actual = UnicodeUtils.downcase(actual_raw)
     matched = expected == actual
-    @@logger.info("Suggested: #{expected}, answer is: #{actual}. I think it is #{matched}")
+    logger.info("Suggested: #{expected}, answer is: #{actual_raw}. I think it is #{matched}")
     matched
   end
 
@@ -72,8 +71,18 @@ class Game
   end
 
   def comment
-    remove_shit(@question.css('Comments')).empty?
-    comment = 'Отсутствует :(' if comment
+    comment = remove_shit(@question.css('Comments'))
+    comment = 'Отсутствует :(' if comment.empty?
     comment
+  end
+
+  def logger
+    @logger || init_logger
+  end
+
+  def init_logger
+    @logger = Logger.new(STDOUT)
+    @logger.level = Logger.const_get((ENV['LOG_LEVEL'] || 'INFO').upcase)
+    @logger
   end
 end

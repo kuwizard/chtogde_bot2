@@ -6,10 +6,7 @@ class MessageParser
 
   attr_accessor :bot, :logger
 
-  def parse_message(message, bot)
-    @bot ||= bot
-
-    @logger ||= Logger.new(STDOUT)
+  def parse_message(message)
     @logger.info("#{message.text} is called")
 
     case message.text
@@ -67,5 +64,11 @@ class MessageParser
 
   def answer(message, chat_id)
     @bot.api.send_message(text: message, chat_id: chat_id, parse_mode: 'Markdown')
+  end
+
+  def init(bot)
+    $stdout.sync = true
+    @bot ||= bot
+    @logger ||= Logger.new(STDOUT)
   end
 end

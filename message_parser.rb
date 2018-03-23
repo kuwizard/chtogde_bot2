@@ -34,6 +34,16 @@ class MessageParser
         else
           answer(Constants::NOT_STARTED, message.chat.id)
         end
+      when '/repeat'
+        if Game.instance.is_on?
+          if Game.instance.asked?
+            answer(Game.instance.post_answer(finished: false), message.chat.id)
+          else
+            answer(Constants::STARTED_NOT_ASKED, message.chat.id)
+          end
+        else
+          answer(Constants::NOT_STARTED, message.chat.id)
+        end
       when '/tellme'
         if Game.instance.asked?
           answer(Game.instance.post_answer(finished: false), message.chat.id)

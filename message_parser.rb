@@ -24,7 +24,7 @@ class MessageParser
           if Game.instance.asked?
             answer(Game.instance.post_answer(to_last: true), message.chat.id)
           end
-          answer(Game.instance.question, message.chat.id)
+          answer(Game.instance.new_question, message.chat.id)
         else
           answer(Constants::NOT_STARTED, message.chat.id)
         end
@@ -37,7 +37,7 @@ class MessageParser
       when '/repeat'
         if Game.instance.is_on?
           if Game.instance.asked?
-            answer(Game.instance.post_answer(finished: false), message.chat.id)
+            answer(Game.instance.question, message.chat.id)
           else
             answer(Constants::STARTED_NOT_ASKED, message.chat.id)
           end

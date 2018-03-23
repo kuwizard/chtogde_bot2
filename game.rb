@@ -29,10 +29,14 @@ class Game
     @game_is_on
   end
 
-  def question
+  def new_question
     xml = Nokogiri::XML(open(URL))
     @question = xml.css('question').first
     @asked = true
+    question
+  end
+
+  def question
     "*Вопрос*: #{remove_shit(@question.css('Question'))}"
   end
 

@@ -9,13 +9,11 @@ Telegram::Bot::Client.run(token) do |bot|
     message.text = message.text.gsub(Constants::BOT_NAME, '') unless message.text.nil?
     case message.text
       when '/start'
-        Game.instance.start
-        bot.api.send_message(chat_id: message.chat.id, text: Constants::START)
+        answer(bot, Game.instance.start)
       when '/stop'
-        Game.instance.stop
-        bot.api.send_message(chat_id: message.chat.id, text: Constants::STOP)
+        answer(bot, Game.instance.stop)
       when '/help'
-        bot.api.send_message(chat_id: message.chat.id, text: Constants::HELP)
+        answer(bot, Constants.HELP)
       when '/next'
         if Game.instance.is_on?
           if Game.instance.asked?
@@ -40,15 +38,21 @@ Telegram::Bot::Client.run(token) do |bot|
       else
         if Game.instance.is_on?
           if Game.instance.asked?
-            message_text = message.to_s.gsub('/', '')
+            message_text = message.to_s.delete('/')
             check_result = Game.instance.check_suggestion(message_text)
-            bot.api.send_message(chat_id: message.chat.id, text: check_result, parse_mode: 'Markdown')
+            answer(bot, check_result)
           else
-            bot.api.send_message(chat_id: message.chat.id, text: Constants::STARTED_NOT_ASKED)
+            answer(bot, Constants::STARTED_NOT_ASKED)
           end
         else
           bot.api.send_message(chat_id: message.chat.id, text: Constants::NOT_STARTED)
         end
     end
+  end
+end
+
+class Message
+  def answer(bot, text)
+    bot.api.send_message(chat_id: message.chat.id, text: text, parse_mode: 'Markdown')
   end
 end

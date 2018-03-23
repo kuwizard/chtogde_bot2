@@ -46,7 +46,7 @@ class MessageParser
         end
       when '/tellme'
         if Game.instance.asked?
-          answer(Game.instance.post_answer(finished: false), message.chat.id)
+          answer(Game.instance.post_answer(finished: false), message.from.id)
         else
           answer(Constants::NOT_STARTED, message.chat.id)
         end

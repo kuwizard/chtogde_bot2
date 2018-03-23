@@ -5,6 +5,7 @@ require 'nokogiri'
 require 'logger'
 require 'open-uri'
 require 'unicode_utils'
+require_relative 'constants'
 
 # noinspection RubyClassVariableUsageInspection
 class Game
@@ -16,10 +17,12 @@ class Game
 
   def start
     @game_is_on = true
+    Constants::START
   end
 
   def stop
     @game_is_on = false
+    Constants::STOP
   end
 
   def is_on?

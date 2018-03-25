@@ -7,7 +7,9 @@ token = ENV['TELEGRAM_BOT_TOKEN']
 Telegram::Bot::Client.run(token) do |bot|
   MessageParser.instance.init(bot)
   bot.listen do |message|
-    message.text = message.text.gsub(Constants::BOT_NAME, '') unless message.text.nil?
+    if message.is_a?(Telegram::Bot::Types::Message)
+      message.text = message.text.gsub(Constants::BOT_NAME, '') unless message.text.nil?
+    end
     MessageParser.instance.parse_message(message)
   end
 end

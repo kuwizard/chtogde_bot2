@@ -10,8 +10,12 @@ class MessageParser
     case message
       when Telegram::Bot::Types::CallbackQuery
         @bot.api.answer_callback_query(callback_query_id: message.id)
+        if message.data.include?('answer')
+          message.data.gsub!('answer', '')
+          post(Game.instance.post_answer, message.data)
+        end
         if message.data == 'tell'
-          answer(Game.instance.post_answer(finished: false), message.from.id)
+          post(Game.instance.post_answer(finished: false), message.from.id)
         end
         if message.data.include?('next')
           message.data.gsub!('next', '')
@@ -21,46 +25,40 @@ class MessageParser
         @logger.info("#{message.text} is called")
         case message.text
           when '/start'
-            answer(Game.instance.start, message.chat.id)
+            post(Game.instance.start, message.chat.id)
           when '/stop'
-            answer(Game.instance.stop, message.chat.id)
+            post(Game.instance.stop, message.chat.id)
           when '/help'
-            answer(Constants.HELP, message.chat.id)
+            post(Constants.HELP, message.chat.id)
           when '/next'
             next_question(message.chat.id)
           when '/answer'
             if Game.instance.is_on?
-              answer(Game.instance.post_answer, message.chat.id)
+              post(Game.instance.post_answer, message.chat.id)
             else
-              answer(Constants::NOT_STARTED, message.chat.id)
+              post(Constants::NOT_STARTED, message.chat.id)
             end
           when '/repeat'
             if Game.instance.is_on?
               if Game.instance.asked?
-                answer(Game.instance.question, message.chat.id)
+                post(Game.instance.question, message.chat.id)
               else
-                answer(Constants::STARTED_NOT_ASKED, message.chat.id)
+                post(Constants::STARTED_NOT_ASKED, message.chat.id)
               end
             else
-              answer(Constants::NOT_STARTED, message.chat.id)
-            end
-          when '/tellme'
-            if Game.instance.asked?
-              answer(Game.instance.post_answer(finished: false), message.from.id)
-            else
-              answer(Constants::NOT_STARTED, message.chat.id)
+              post(Constants::NOT_STARTED, message.chat.id)
             end
           else
             if Game.instance.is_on?
               if Game.instance.asked?
                 message_text = message.to_s.delete('/')
                 check_result = Game.instance.check_suggestion(message_text)
-                answer(check_result, message.chat.id)
+                post(check_result, message.chat.id)
               else
-                answer(Constants::STARTED_NOT_ASKED, message.chat.id)
+                post(Constants::STARTED_NOT_ASKED, message.chat.id)
               end
             else
-              answer(Constants::NOT_STARTED, message.chat.id)
+              post(Constants::NOT_STARTED, message.chat.id)
             end
         end
       else
@@ -70,25 +68,30 @@ class MessageParser
     @logger.warn('Caught ResponseError')
   end
 
-  def answer(message, chat_id, **args)
+  def post(message, chat_id, **args)
     @bot.api.send_message(text: message, chat_id: chat_id, parse_mode: 'Markdown', **args)
   end
 
   def next_question(id)
     if Game.instance.is_on?
       if Game.instance.asked?
-        answer(Game.instance.post_answer(to_last: true), id)
+        post(Game.instance.post_answer(to_last: true), id)
       end
       kb = [
         [
+          Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Ответ', callback_data: "answer#{id}"),
           Telegram::Bot::Types::InlineKeyboardButton.new(text: 'В личку', callback_data: 'tell'),
           Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Следующий', callback_data: "next#{id}")
         ]
       ]
       markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
-      answer(Game.instance.new_question, id, reply_markup: markup)
+      new_question = Game.instance.new_question
+      if Game.instance.question_contains_photo?
+        @bot.api.send_photo(chat_id: id, photo: Game.instance.question_photo)
+      end
+      post(new_question, id, reply_markup: markup)
     else
-      answer(Constants::NOT_STARTED, id)
+      post(Constants::NOT_STARTED, id)
     end
   end
 

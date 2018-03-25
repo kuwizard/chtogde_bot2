@@ -13,7 +13,7 @@ class Game
 
   URL = 'https://db.chgk.info/xml/random/limit1'
 
-  attr_accessor :question, :asked, :game_is_on, :logger
+  attr_accessor :question, :asked, :game_is_on, :logger, :photo
 
   def start
     @game_is_on = true
@@ -33,6 +33,7 @@ class Game
     xml = Nokogiri::XML(open(URL))
     @question = xml.css('question').first
     @asked = true
+    @photo = photo_value
     question
   end
 
@@ -59,10 +60,18 @@ class Game
     @asked && !@asked.nil?
   end
 
+  def question_contains_photo?
+    !@photo.nil?
+  end
+
+  def question_photo
+    @photo
+  end
+
   private
 
   def remove_shit(text)
-    text.to_s.gsub(/<.*?>/, '').gsub(/\r/, ' ').gsub(/\n/, ' ').gsub(/\.$/, '')
+    text.to_s.gsub(/<.*?>/, '').gsub(/\r/, ' ').gsub(/\n/, ' ').gsub(/\.$/, '').gsub(/\(pic:.*\)/, '').strip
   end
 
   def match?(expected_raw, actual_raw)
@@ -91,5 +100,13 @@ class Game
     @logger = Logger.new(STDOUT)
     @logger.level = Logger.const_get((ENV['LOG_LEVEL'] || 'INFO').upcase)
     @logger
+  end
+
+  def photo_value
+    question_text = @question.css('Question').to_s
+    if question_text.match(/\(pic: \d+\.[a-z]{3}\)/)
+      img_path = question_text.scan(/\(pic: (\d+\.[a-z]{3})\)/).first.first
+      "#{Constants::IMAGE_URL}#{img_path}"
+    end
   end
 end

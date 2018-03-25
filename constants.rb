@@ -10,4 +10,6 @@ module Constants
 /tellme - пришлёт ответ личным сообщением'
   NOT_STARTED = 'Чтобы начать введите /start. Если нужна помощь, набирай /help'
   STARTED_NOT_ASKED = 'Не был задан вопрос, набери /next чтобы получить новый'
+
+  IMAGE_URL = 'http://db.chgk.info/images/db/'
 end

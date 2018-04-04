@@ -1,4 +1,3 @@
-require 'singleton'
 require 'net/http'
 require 'uri'
 require 'nokogiri'
@@ -7,38 +6,19 @@ require 'open-uri'
 require 'unicode_utils'
 require_relative 'constants'
 
-# noinspection RubyClassVariableUsageInspection
 class Game
-  include Singleton
-
-  URL = 'https://db.chgk.info/xml/random/limit1'
-
-  attr_accessor :question, :asked, :game_is_on, :logger, :photo
-
-  def start
-    @game_is_on = true
-    Constants::START
-  end
-
-  def stop
-    @game_is_on = false
-    Constants::STOP
-  end
-
-  def is_on?
-    @game_is_on
-  end
+  attr_accessor :question_raw, :asked, :logger, :photo
 
   def new_question
-    xml = Nokogiri::XML(open(URL))
-    @question = xml.css('question').first
+    xml = Nokogiri::XML(open(Constants::GAME_URL))
+    @question_raw = xml.css('question').first
     @asked = true
     @photo = photo_value
     question
   end
 
   def question
-    "*Вопрос*: #{remove_shit(@question.css('Question'))}"
+    "*Вопрос*: #{remove_shit(@question_raw.css('Question'))}"
   end
 
   def post_answer(finished: true, to_last: false)
@@ -78,21 +58,21 @@ class Game
     expected = UnicodeUtils.downcase(expected_raw)
     actual = UnicodeUtils.downcase(actual_raw)
     matched = expected == actual
-    logger.info("Suggested: #{expected}, answer is: #{actual_raw}. I think it is #{matched}")
+    log.info("Suggested: #{expected}, answer is: #{actual_raw}. I think it is #{matched}")
     matched
   end
 
   def answer
-    remove_shit(@question.css('Answer'))
+    remove_shit(@question_raw.css('Answer'))
   end
 
   def comment
-    comment = remove_shit(@question.css('Comments'))
+    comment = remove_shit(@question_raw.css('Comments'))
     comment = 'Отсутствует :(' if comment.empty?
     comment
   end
 
-  def logger
+  def log
     @logger || init_logger
   end
 
@@ -103,7 +83,7 @@ class Game
   end
 
   def photo_value
-    question_text = @question.css('Question').to_s
+    question_text = @question_raw.css('Question').to_s
     if question_text.match(/\(pic: \d+\.[a-z]{3}\)/)
       img_path = question_text.scan(/\(pic: (\d+\.[a-z]{3})\)/).first.first
       "#{Constants::IMAGE_URL}#{img_path}"

@@ -6,10 +6,10 @@ module Constants
 /stop - останавливает бота
 /next - следующий вопрос
 /answer - дать ответ на предыдущий
-/любой текст - попытаться ответить на заданный вопрос
-/tellme - пришлёт ответ личным сообщением'
+/любой текст - попытаться ответить на заданный вопрос'
   NOT_STARTED = 'Чтобы начать введите /start. Если нужна помощь, набирай /help'
   STARTED_NOT_ASKED = 'Не был задан вопрос, набери /next чтобы получить новый'
 
+  GAME_URL = 'https://db.chgk.info/xml/random/limit1'
   IMAGE_URL = 'http://db.chgk.info/images/db/'
 end

@@ -1,58 +1,49 @@
 require 'net/http'
 require 'uri'
-require 'nokogiri'
 require 'logger'
 require 'open-uri'
 require 'unicode_utils'
-require_relative 'constants'
+require 'benchmark'
+require_relative 'question'
 
 class Game
-  attr_accessor :question_raw, :asked, :logger, :photo
+  attr_reader :asked, :question_has_photo
+  @logger
+  @question
 
-  def new_question
-    xml = Nokogiri::XML(open(Constants::GAME_URL))
-    @question_raw = xml.css('question').first
-    @asked = true
-    @photo = photo_value
-    question
+  def initialize
+    @asked = false
   end
 
-  def question
-    "*Вопрос*: #{remove_shit(@question_raw.css('Question'))}"
+  def new_question
+    @asked = true
+    time = Benchmark.measure {
+      @question = Question.new
+    }
+    @question_has_photo = !@question.photo.nil?
+    log.info("Time to create a question: #{time.real}")
+    @question.text
   end
 
   def post_answer(finished: true, to_last: false)
     @asked = false if finished
-    add_to_last = to_last ? ' к предыдущему вопросу' : ''
-    "*Ответ#{add_to_last}*: #{answer}\n*Комментарий*: #{comment}"
+    to_last ? @question.answer_to_last_text : @question.answer_text
   end
 
   def check_suggestion(suggested)
-    if match?(suggested, answer)
+    if match?(suggested, @question.answer)
       @asked = false
-      "\"*#{suggested}*\" - это правильный ответ!\n*Комментарий*: #{comment}"
+      "\"*#{suggested}*\" - это правильный ответ!\n#{@question.comment}"
     else
       "\"*#{suggested}*\" - это неправильный ответ."
     end
   end
 
-  def asked?
-    @asked && !@asked.nil?
-  end
-
-  def question_contains_photo?
-    !@photo.nil?
-  end
-
-  def question_photo
-    @photo
+  def photo
+    @question.photo
   end
 
   private
-
-  def remove_shit(text)
-    text.to_s.gsub(/<.*?>/, '').gsub(/\r/, ' ').gsub(/\n/, ' ').gsub(/\.$/, '').gsub(/\(pic:.*\)/, '').strip
-  end
 
   def match?(expected_raw, actual_raw)
     expected = UnicodeUtils.downcase(expected_raw)
@@ -60,16 +51,6 @@ class Game
     matched = expected == actual
     log.info("Suggested: #{expected}, answer is: #{actual_raw}. I think it is #{matched}")
     matched
-  end
-
-  def answer
-    remove_shit(@question_raw.css('Answer'))
-  end
-
-  def comment
-    comment = remove_shit(@question_raw.css('Comments'))
-    comment = 'Отсутствует :(' if comment.empty?
-    comment
   end
 
   def log
@@ -80,13 +61,5 @@ class Game
     @logger = Logger.new(STDOUT)
     @logger.level = Logger.const_get((ENV['LOG_LEVEL'] || 'INFO').upcase)
     @logger
-  end
-
-  def photo_value
-    question_text = @question_raw.css('Question').to_s
-    if question_text.match(/\(pic: \d+\.[a-z]{3}\)/)
-      img_path = question_text.scan(/\(pic: (\d+\.[a-z]{3})\)/).first.first
-      "#{Constants::IMAGE_URL}#{img_path}"
-    end
   end
 end

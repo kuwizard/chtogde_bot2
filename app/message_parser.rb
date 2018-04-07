@@ -28,6 +28,9 @@ class MessageParser
         # Check if user tries to play without starting
         if !%w(/start /stop /help).include?(message.text) && !GameManager.instance.on?(id)
           post(Constants::NOT_STARTED, id)
+          # Check if user tries to raise answer without asked question
+        elsif !%w(/start /stop /help /next).include?(message.text) && !GameManager.instance.game(id).asked
+          post(Constants::STARTED_NOT_ASKED, id)
         else
           case message.text
             when '/start'
@@ -41,19 +44,11 @@ class MessageParser
             when '/answer'
               post(GameManager.instance.game(id).post_answer, id)
             when '/repeat'
-              if GameManager.instance.game(id).asked?
-                post(GameManager.instance.game(id).question, id)
-              else
-                post(Constants::STARTED_NOT_ASKED, id)
-              end
+              post(GameManager.instance.game(id).question, id)
             else
-              if GameManager.instance.game(id).asked?
-                message_text = message.to_s.delete('/')
-                check_result = GameManager.instance.game(id).check_suggestion(message_text)
-                post(check_result, id)
-              else
-                post(Constants::STARTED_NOT_ASKED, id)
-              end
+              message_text = message.to_s.delete('/')
+              check_result = GameManager.instance.game(id).check_suggestion(message_text)
+              post(check_result, id)
           end
         end
       else
@@ -77,13 +72,13 @@ class MessageParser
 
   def next_question(id, private)
     if GameManager.instance.on?(id)
-      if GameManager.instance.game(id).asked?
+      if GameManager.instance.game(id).asked
         post(GameManager.instance.game(id).post_answer(to_last: true), id)
       end
-      markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: keyboard(id, private))
       new_question = GameManager.instance.game(id).new_question
-      if GameManager.instance.game(id).question_contains_photo?
-        @bot.api.send_photo(chat_id: id, photo: GameManager.instance.game(id).question_photo)
+      markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: keyboard(id, private))
+      if GameManager.instance.game(id).question_has_photo
+        @bot.api.send_photo(chat_id: id, photo: GameManager.instance.game(id).photo)
       end
       post(new_question, id, reply_markup: markup)
     else

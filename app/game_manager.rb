@@ -10,14 +10,12 @@ class GameManager
     @games = {} if @games.nil?
     if @games.include?(id)
       @games[id]
-    else
-      @games[id] = Game.new
     end
   end
 
   def start(id)
     @games = {} if @games.nil?
-    @games[id] = Game.new
+    @games[id] = Game.new unless @games.include?(id)
     Constants::START
   end
 

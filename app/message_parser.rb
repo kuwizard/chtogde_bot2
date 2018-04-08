@@ -1,4 +1,5 @@
 require 'singleton'
+require 'benchmark'
 require_relative 'game_manager'
 
 class MessageParser
@@ -75,7 +76,11 @@ class MessageParser
       if GameManager.instance.game(id).asked
         post(GameManager.instance.game(id).post_answer(to_last: true), id)
       end
-      new_question = GameManager.instance.game(id).new_question
+      new_question = nil
+      time = Benchmark.measure {
+        new_question = GameManager.instance.game(id).new_question
+      }
+      @logger.info("Time to get a question: #{time.real}")
       markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: keyboard(id, private))
       if GameManager.instance.game(id).question_has_photo
         @bot.api.send_photo(chat_id: id, photo: GameManager.instance.game(id).photo)

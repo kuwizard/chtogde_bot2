@@ -12,6 +12,7 @@ class Game
   @questions
   @question
   @question_collector_thread
+  @cheater_detected
 
   def initialize
     @asked = false
@@ -29,13 +30,13 @@ class Game
     @question.text
   end
 
-  def post_answer(finished: true, to_last: false)
-    @asked = false if finished
-    to_last ? @question.answer_to_last_text : @question.answer_text
+  def post_answer(mode: :normal)
+    @asked = false unless mode == :i_am_a_cheater
+    answer_start(mode: mode) + @question.answer_text
   end
 
   def check_suggestion(suggested)
-    if match?(suggested, @question.answer)
+    if match?(suggested, @question.answer_trimmed)
       @asked = false
       "\"*#{suggested}*\" - это правильный ответ!\n#{@question.comment}"
     else
@@ -71,6 +72,24 @@ class Game
     @question_collector_thread = Thread.new do
       amount_needed = up_to_size - @questions.size
       @questions += QuestionCollector.questions(amount_needed) unless amount_needed < 1
+    end
+  end
+
+  def cheated_text
+    @cheater_detected ? ' (который кое-кто уже подсмотрел)' : ''
+  end
+
+  def answer_start(mode:)
+    case mode
+      when :normal
+        "*Ответ#{cheated_text}*: "
+      when :to_last
+        "*Ответ на предыдущий вопрос#{cheated_text}*: "
+      when :i_am_a_cheater
+        @cheater_detected = true
+        '*Ответ *: '
+      else
+        fail "Unknown answer mode '#{mode}'"
     end
   end
 end

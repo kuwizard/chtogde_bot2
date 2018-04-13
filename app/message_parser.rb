@@ -1,5 +1,4 @@
 require 'singleton'
-require 'benchmark'
 require_relative 'game_manager'
 
 class MessageParser
@@ -17,7 +16,7 @@ class MessageParser
         end
         if message.data.include?('tell')
           message.data.gsub!('tell', '')
-          post(GameManager.instance.game(message.data.to_i).post_answer(finished: false), message.from.id)
+          post(GameManager.instance.game(message.data.to_i).post_answer(mode: :i_am_a_cheater), message.from.id)
         end
         if message.data.include?('next')
           message.data.gsub!('next', '')
@@ -74,13 +73,9 @@ class MessageParser
   def next_question(id, private)
     if GameManager.instance.on?(id)
       if GameManager.instance.game(id).asked
-        post(GameManager.instance.game(id).post_answer(to_last: true), id)
+        post(GameManager.instance.game(id).post_answer(mode: :to_last), id)
       end
-      new_question = nil
-      time = Benchmark.measure {
-        new_question = GameManager.instance.game(id).new_question
-      }
-      @logger.info("Time to get a question: #{time.real}")
+      new_question = GameManager.instance.game(id).new_question
       markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: keyboard(id, private))
       if GameManager.instance.game(id).question_has_photo
         @bot.api.send_photo(chat_id: id, photo: GameManager.instance.game(id).photo)

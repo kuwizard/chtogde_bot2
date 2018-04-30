@@ -12,7 +12,7 @@ class MessageParser
         @bot.api.answer_callback_query(callback_query_id: message.id)
         if message.data.include?('answer')
           message.data.gsub!('answer', '')
-          post(GameManager.instance.game(message.data.to_i).post_answer, message.data)
+          return GameManager.instance.game(message.data.to_i).post_answer, message.data
         end
         if message.data.include?('tell')
           message.data.gsub!('tell', '')
@@ -64,11 +64,12 @@ class MessageParser
     @logger ||= Logger.new(STDOUT)
   end
 
-  private
 
   def post(message, chat_id, **args)
     @bot.api.send_message(text: message, chat_id: chat_id, parse_mode: 'Markdown', **args)
   end
+
+  private
 
   def next_question(id, private)
     if GameManager.instance.on?(id)

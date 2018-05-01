@@ -1,5 +1,6 @@
 require 'singleton'
 require_relative 'game_manager'
+require_relative 'db'
 
 class MessageParser
   include Singleton
@@ -23,6 +24,7 @@ class MessageParser
           next_question(message.data.to_i, private?(message))
         end
       when Telegram::Bot::Types::Message
+        return unless message_text.start_with?('/')
         @logger.info("#{message.text} is called in #{chat_name(message)}")
         id = message.chat.id
         # Check if user tries to play without starting
@@ -62,6 +64,7 @@ class MessageParser
     $stdout.sync = true
     @bot ||= bot
     @logger ||= Logger.new(STDOUT)
+    Database.instance.init
   end
 
   private

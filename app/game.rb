@@ -5,18 +5,21 @@ require 'open-uri'
 require 'unicode_utils'
 require_relative 'question_collector'
 require_relative 'question'
+require_relative 'db'
 
 class Game
   attr_reader :asked, :question_has_photo
   @logger
   @questions
   @question
+  @chat_id
   @question_collector_thread
   @cheater_detected
 
-  def initialize
+  def initialize(chat_id)
     @asked = false
     @questions = []
+    @chat_id = chat_id
     add_questions(1)
   end
 
@@ -26,12 +29,16 @@ class Game
     @question = @questions.first
     @questions.shift
     @question_has_photo = !@question.photo.nil?
-    add_questions(3)
+    add_questions(1)
+    Database.instance.save_asked_random(@chat_id, false, @question.id)
     @question.text
   end
 
   def post_answer(mode: :normal)
-    @asked = false unless mode == :i_am_a_cheater
+    unless mode == :i_am_a_cheater
+      @asked = false
+      Database.instance.save_asked_random(@chat_id)
+    end
     answer_start(mode: mode) + @question.answer_text
   end
 

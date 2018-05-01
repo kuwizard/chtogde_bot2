@@ -2,20 +2,25 @@ require 'nokogiri'
 require_relative 'constants'
 
 class Question
-  attr_reader :text, :comment, :answer_original, :answer_trimmed, :answer_text, :answer_to_last_text, :photo
+  attr_reader :text, :comment, :answer_original, :answer_trimmed, :answer_text, :answer_to_last_text, :photo, :id
   @question_raw
 
   def initialize(question_xml)
     @question_raw = question_xml
-    @text = "*Вопрос*: #{remove_shit(@question_raw.css('Question'))}"
+    @text = "*Вопрос*: #{remove_shit(extract('Question'))}"
     @comment = add_comment
-    @answer_original = remove_shit(@question_raw.css('Answer'))
+    @answer_original = remove_shit(extract('Answer'))
     @answer_trimmed = remove_shit_at_all(@answer_original)
     @answer_text = "#{@answer_original}\n#{@comment}"
     @photo = photo_value
+    @id = extract('QuestionId')
   end
 
   private
+
+  def extract(node_text)
+    @question_raw.css(node_text).inner_text
+  end
 
   def photo_value
     question_text = @question_raw.css('Question').to_s
@@ -26,8 +31,7 @@ class Question
   end
 
   def remove_shit(text)
-    text.to_s.gsub(/<.*?>/, '')
-        .gsub(/\r/, ' ')
+    text.to_s.gsub(/\r/, ' ')
         .gsub(/\n/, ' ')
         .gsub(/\(pic:.*\)/, '').strip
   end

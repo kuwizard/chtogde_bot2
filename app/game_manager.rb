@@ -15,7 +15,7 @@ class GameManager
 
   def start(id)
     @games = {} if @games.nil?
-    @games[id] = Game.new unless @games.include?(id)
+    @games[id] = Game.new(id) unless @games.include?(id)
     Constants::START
   end
 

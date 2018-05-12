@@ -10,6 +10,7 @@ module Constants
   NOT_STARTED = 'Чтобы начать введите /start. Если нужна помощь, набирай /help'
   STARTED_NOT_ASKED = 'Не был задан вопрос, набери /next чтобы получить новый'
 
-  GAME_URL = 'https://db.chgk.info/xml/random/'
+  RANDOM_QUESTION_URL = 'https://db.chgk.info/xml/random/'
+  TOUR_QUESTION_URL = 'https://db.chgk.info/tour/%tour_name/xml/'
   IMAGE_URL = 'http://db.chgk.info/images/db/'
 end

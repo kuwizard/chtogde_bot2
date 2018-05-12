@@ -1,11 +1,13 @@
 require 'telegram/bot'
 require_relative 'message_parser'
+require_relative 'game_manager'
 require_relative 'constants'
 
 token = ENV['TELEGRAM_BOT_TOKEN']
 
 Telegram::Bot::Client.run(token) do |bot|
   MessageParser.instance.init(bot)
+  GameManager.instance.restore_previous_games
 
   processor = MyBotProcessor.new(MessageParser.instance)
 

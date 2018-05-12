@@ -2,7 +2,7 @@ require 'nokogiri'
 require_relative 'constants'
 
 class Question
-  attr_reader :text, :comment, :answer_original, :answer_trimmed, :answer_text, :answer_to_last_text, :photo, :id
+  attr_reader :text, :comment, :answer_original, :answer_trimmed, :answer_text, :answer_to_last_text, :photo, :tour_name, :id
   @question_raw
 
   def initialize(question_xml)
@@ -13,7 +13,8 @@ class Question
     @answer_trimmed = remove_shit_at_all(@answer_original)
     @answer_text = "#{@answer_original}\n#{@comment}"
     @photo = photo_value
-    @id = extract('QuestionId')
+    @tour_name = extract_tour_name
+    @id = extract('Number')
   end
 
   private
@@ -39,15 +40,26 @@ class Question
   def remove_shit_at_all(text)
     text.gsub(/\.$/, '') # If dot is at the end
         .gsub(/^"(.+(?="$))"$/, '\1') # Delete quotes but only if they are leading and trailing
-        .gsub(/^.../, '').strip
+        .gsub(/^\.\.\./, '') # Delete three dots at the beginning
+        .strip
   end
 
   def add_comment
-    comment = remove_shit(@question_raw.css('Comments'))
+    comment = extract('Comments')
+    comment = remove_shit(comment)
     if comment.empty?
       '*Комментарий*: Отсутствует :('
     else
       "*Комментарий*: #{comment}"
+    end
+  end
+
+  def extract_tour_name
+    probable_tour_name = extract('tourFileName')
+    if probable_tour_name.empty?
+      extract('TextId').gsub(/-\d+$/, '')
+    else
+      probable_tour_name
     end
   end
 end

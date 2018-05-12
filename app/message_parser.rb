@@ -1,5 +1,6 @@
 require 'singleton'
 require_relative 'game_manager'
+require_relative 'db'
 
 class MessageParser
   include Singleton
@@ -23,13 +24,14 @@ class MessageParser
           next_question(message.data.to_i, private?(message))
         end
       when Telegram::Bot::Types::Message
+        return unless message.text.start_with?('/')
         @logger.info("#{message.text} is called in #{chat_name(message)}")
         id = message.chat.id
         # Check if user tries to play without starting
         if !%w(/start /stop /help).include?(message.text) && !GameManager.instance.on?(id)
           post(Constants::NOT_STARTED, id)
           # Check if user tries to raise answer without asked question
-        elsif !%w(/start /stop /help /next).include?(message.text) && !GameManager.instance.game(id).asked
+        elsif !%w(/start /stop /help /next /answer).include?(message.text) && !GameManager.instance.game(id).asked
           post(Constants::STARTED_NOT_ASKED, id)
         else
           case message.text

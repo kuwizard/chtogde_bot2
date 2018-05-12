@@ -20,6 +20,8 @@ GEM
       mini_portile2 (~> 2.2.0)
     nokogiri (1.8.0-x86-mingw32)
       mini_portile2 (~> 2.2.0)
+    pg (1.0.0)
+    pg (1.0.0-x86-mingw32)
     telegram-bot-ruby (0.8.6.1)
       faraday
       inflecto
@@ -38,6 +40,7 @@ PLATFORMS
 
 DEPENDENCIES
   nokogiri
+  pg
   telegram-bot-ruby
   unicode_utils
 

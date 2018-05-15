@@ -30,7 +30,7 @@ class Database
 
   def save_asked(mode, chat_id:, tour_name:, question_id:)
     if list_of_games(mode).include?(chat_id)
-      @db.query("UPDATE #{mode_to_table(mode)} SET chat_id = '#{chat_id}', tour_name = '#{tour_name}', question_id = '#{question_id}', asked = true;")
+      @db.query("UPDATE #{mode_to_table(mode)} SET tour_name = '#{tour_name}', question_id = '#{question_id}', asked = true WHERE chat_id = '#{chat_id}';")
     else
       @db.query("INSERT INTO #{mode_to_table(mode)} (chat_id, tour_name, question_id, asked) VALUES ('#{chat_id}', '#{tour_name}' ,'#{question_id}', true);")
     end

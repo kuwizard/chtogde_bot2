@@ -84,10 +84,10 @@ class Game
   end
 
   def add_random_questions(up_to_size = 3)
-    @question_collector_thread = Thread.new do
+    # @question_collector_thread = Thread.new do
       amount_needed = up_to_size - @questions.size
       @questions += QuestionCollector.random_questions(amount_needed) unless amount_needed < 1
-    end
+    # end
   end
 
   def add_specific_question(tour_name:, question_id:)

@@ -1,15 +1,7 @@
 require 'pg'
-require 'singleton'
 
 class Database
-  include Singleton
-  @db
-
-  CHAT_ID = 'chat_id'
-  QUESTION_ID = 'question_id'
-  TOUR_NAME = 'tour_name'
-
-  def init
+  def initialize
     db_host = ENV['DB_HOST']
     db_port = ENV['DB_PORT']
     db_name = ENV['DB_NAME']
@@ -19,7 +11,7 @@ class Database
   end
 
   def list_of_games(mode)
-    result = @db.query("SELECT #{CHAT_ID} FROM #{mode_to_table(mode)};")
+    result = @db.query("SELECT chat_id FROM #{mode_to_table(mode)};")
     result.column_values(0).map(&:to_i)
   end
 

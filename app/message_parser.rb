@@ -59,7 +59,7 @@ class MessageParser
 
   def next_question(id, private)
     if GameManager.instance.game(id).asked
-      previous_answer = GameManager.instance.game(id).post_answer(mode: :to_last)
+      previous_answer = GameManager.instance.post_answer_to_game(id, mode: :to_last)
     end
     new_question = GameManager.instance.game(id).new_question
     reply = Reply.new(new_question, id, previous_answer)

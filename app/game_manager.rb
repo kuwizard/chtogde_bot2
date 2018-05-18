@@ -23,7 +23,7 @@ class GameManager
     @games = {} if @games.nil?
     if on?(id)
       @games.delete(id)
-      Database.instance.delete_random(:random, chat_id: id)
+      @db.delete_random(:random, chat_id: id)
     end
     Constants::STOP
   end
@@ -33,14 +33,25 @@ class GameManager
     @games.include?(id)
   end
 
-  def restore_previous_games
-    Database.instance.init
+  def restore_previous_games(db = nil)
+    if db.nil?
+      @db = Database.new
+    else
+      @db = db
+    end
     @games = {} if @games.nil?
-    games_of_random_mode = Database.instance.list_of_games(:random)
+    games_of_random_mode = @db.list_of_games(:random)
     games_of_random_mode.each do |chat_id|
       chat_id = chat_id.to_i
-      question = Database.instance.get_question(:random, chat_id: chat_id)
+      question = @db.get_question(:random, chat_id: chat_id)
       @games[chat_id] = Game.new(chat_id: chat_id, tour_name: question['tour_name'], question_id: question['question_id'], asked: question['asked'])
     end
+  end
+
+  def post_answer_to_game(id, mode:)
+    unless mode == :i_am_a_cheater
+      @db.set_asked_to_false(:random, chat_id: @chat_id)
+    end
+    game(id).post_answer(mode: mode)
   end
 end

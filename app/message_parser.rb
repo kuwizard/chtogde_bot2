@@ -1,91 +1,73 @@
 require 'singleton'
 require_relative 'game_manager'
-require_relative 'db'
+require_relative 'reply'
 
 class MessageParser
   include Singleton
 
-  attr_accessor :bot, :logger
-
   def parse_message(message)
     case message
       when Telegram::Bot::Types::CallbackQuery
-        @bot.api.answer_callback_query(callback_query_id: message.id)
         if message.data.include?('answer')
           message.data.gsub!('answer', '')
-          post(GameManager.instance.game(message.data.to_i).post_answer, message.data)
-        end
-        if message.data.include?('tell')
+          Reply.new(GameManager.instance.game(message.data.to_i).post_answer, message.data)
+        elsif message.data.include?('tell')
           message.data.gsub!('tell', '')
-          post(GameManager.instance.game(message.data.to_i).post_answer(mode: :i_am_a_cheater), message.from.id)
-        end
-        if message.data.include?('next')
+          Reply.new(GameManager.instance.game(message.data.to_i).post_answer(mode: :i_am_a_cheater), message.from.id)
+        elsif message.data.include?('next')
           message.data.gsub!('next', '')
           next_question(message.data.to_i, private?(message))
+        else
+          fail "Cannot parse message.data '#{message.data}'"
         end
       when Telegram::Bot::Types::Message
         return unless message.text.start_with?('/')
-        @logger.info("#{message.text} is called in #{chat_name(message)}")
+        logger.info("#{message.text} is called in #{chat_name(message)}")
         id = message.chat.id
         # Check if user tries to play without starting
         if !%w(/start /stop /help).include?(message.text) && !GameManager.instance.on?(id)
-          post(Constants::NOT_STARTED, id)
+          Reply.new(Constants::NOT_STARTED, id)
           # Check if user tries to raise answer without asked question
         elsif !%w(/start /stop /help /next /answer).include?(message.text) && !GameManager.instance.game(id).asked
-          post(Constants::STARTED_NOT_ASKED, id)
+          Reply.new(Constants::STARTED_NOT_ASKED, id)
         else
           case message.text
             when '/start'
-              post(GameManager.instance.start(id), id)
+              Reply.new(GameManager.instance.start(id), id)
             when '/stop'
-              post(GameManager.instance.stop(id), id)
+              Reply.new(GameManager.instance.stop(id), id)
             when '/help'
-              post(Constants::HELP, id)
+              Reply.new(Constants::HELP, id)
             when '/next'
               next_question(id, private?(message))
             when '/answer'
-              post(GameManager.instance.game(id).post_answer, id)
+              Reply.new(GameManager.instance.game(id).post_answer, id)
             when '/repeat'
-              post(GameManager.instance.game(id).question, id)
+              Reply.new(GameManager.instance.game(id).question, id)
             else
               message_text = message.to_s.delete('/')
               check_result = GameManager.instance.game(id).check_suggestion(message_text)
-              post(check_result, id)
+              Reply.new(check_result, id)
           end
         end
       else
-        @logger.warn("Unknown message type #{message.class}")
+        logger.warn("Unknown message type #{message.class}")
     end
-  rescue Telegram::Bot::Exceptions::ResponseError
-    @logger.warn('Caught ResponseError')
-  end
-
-  def init(bot)
-    $stdout.sync = true
-    @bot ||= bot
-    @logger ||= Logger.new(STDOUT)
   end
 
   private
 
-  def post(message, chat_id, **args)
-    @bot.api.send_message(text: message, chat_id: chat_id, parse_mode: 'Markdown', **args)
-  end
-
   def next_question(id, private)
-    if GameManager.instance.on?(id)
-      if GameManager.instance.game(id).asked
-        post(GameManager.instance.game(id).post_answer(mode: :to_last), id)
-      end
-      new_question = GameManager.instance.game(id).new_question
-      markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: keyboard(id, private))
-      if GameManager.instance.game(id).question_has_photo
-        @bot.api.send_photo(chat_id: id, photo: GameManager.instance.game(id).photo)
-      end
-      post(new_question, id, reply_markup: markup)
-    else
-      post(Constants::NOT_STARTED, id)
+    if GameManager.instance.game(id).asked
+      previous_answer = GameManager.instance.post_answer_to_game(id, mode: :to_last)
     end
+    new_question = GameManager.instance.game(id).new_question
+    reply = Reply.new(new_question, id, previous_answer)
+    reply.markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: keyboard(id, private))
+    if GameManager.instance.game(id).question_has_photo
+      reply.photo = GameManager.instance.game(id).photo
+    end
+    reply
   end
 
   def keyboard(id, private)
@@ -110,5 +92,10 @@ class MessageParser
     else
       "group chat called '#{message.chat.title}'"
     end
+  end
+
+  def logger
+    $stdout.sync = true
+    @logger ||= Logger.new(STDOUT)
   end
 end

@@ -5,7 +5,7 @@ require_relative '../app/message_parser'
 require_relative '../mocks/database_mock'
 
 # encoding: utf-8
-class RealChgkDB < Test::Unit::TestCase
+class RealChgkDBTest < Test::Unit::TestCase
 
   def test_first
     processor = BotProcessor.new(MessageParser.instance)

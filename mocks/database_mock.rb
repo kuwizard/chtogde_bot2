@@ -2,7 +2,7 @@ require_relative '../app/db'
 
 class DatabaseMock < Database
   def initialize(data)
-    if data
+    if data && !data.empty?
       @data = [data]
     else
       @data = []

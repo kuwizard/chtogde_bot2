@@ -68,7 +68,7 @@ class Game
     expected = UnicodeUtils.downcase(expected_raw)
     actual = UnicodeUtils.downcase(actual_raw)
     matched = expected == actual
-    log.info("Suggested: #{expected}, answer is: #{actual_raw}. I think it is #{matched}")
+    log.info("Suggested: #{expected}, answer is: #{actual_raw}. I think it is #{matched}") unless ENV['TEST']
     matched
   end
 

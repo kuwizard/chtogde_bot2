@@ -1,5 +1,6 @@
 require 'singleton'
 require_relative 'game'
+require_relative 'db'
 
 class GameManager
   include Singleton

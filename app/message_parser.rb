@@ -22,13 +22,13 @@ class MessageParser
         end
       when Telegram::Bot::Types::Message
         return unless message.text.start_with?('/')
-        logger.info("#{message.text} is called in #{chat_name(message)}")
+        logger.info("#{message.text} is called in #{chat_name(message)}") unless ENV['TEST']
         id = message.chat.id
         # Check if user tries to play without starting
         if !%w(/start /stop /help).include?(message.text) && !GameManager.instance.on?(id)
           Reply.new(Constants::NOT_STARTED, id)
           # Check if user tries to raise answer without asked question
-        elsif !%w(/start /stop /help /next /answer).include?(message.text) && !GameManager.instance.game(id).asked
+        elsif !%w(/start /stop /help /next).include?(message.text) && !GameManager.instance.game(id).asked
           Reply.new(Constants::STARTED_NOT_ASKED, id)
         else
           case message.text

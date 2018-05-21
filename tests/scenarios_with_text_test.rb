@@ -27,7 +27,7 @@ class ScenariosWithTextTest < Test::Unit::TestCase
     send_message('/start')
     send_message('/next')
     reply = send_message('/быть')
-    expected = "\"*быть*\" - это правильный ответ!\n*Комментарий*: Замечательный комментарий."
+    expected = "\"*быть*\"/\"Не быть\" - это правильный ответ!\n*Комментарий*: Замечательный комментарий."
     assert_equal(expected, reply.message, 'Incorrect message on correct answer')
   end
 
@@ -35,7 +35,7 @@ class ScenariosWithTextTest < Test::Unit::TestCase
     send_message('/start')
     send_message('/next')
     reply = send_message('/БЫТЬ')
-    expected = "\"*БЫТЬ*\" - это правильный ответ!\n*Комментарий*: Замечательный комментарий."
+    expected = "\"*БЫТЬ*\"/\"Не быть\" - это правильный ответ!\n*Комментарий*: Замечательный комментарий."
     assert_equal(expected, reply.message, 'Incorrect message on correct UPPERCASE answer')
   end
 
@@ -51,7 +51,7 @@ class ScenariosWithTextTest < Test::Unit::TestCase
     send_message('/start')
     send_message('/next')
     reply = send_message('/answer')
-    expected = "*Ответ*: Быть.\n*Комментарий*: Замечательный комментарий."
+    expected = "*Ответ*: Быть./Не быть.\n*Комментарий*: Замечательный комментарий."
     assert_equal(expected, reply.message, 'Incorrect message on /answer')
   end
 end

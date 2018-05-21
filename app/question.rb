@@ -2,7 +2,7 @@ require 'nokogiri'
 require_relative 'constants'
 
 class Question
-  attr_reader :text, :comment, :answer_original, :answer_trimmed, :answer_text, :answer_to_last_text, :photo, :tour_name, :id
+  attr_reader :text, :comment, :answer_original, :answers_trimmed, :answer_text, :answer_to_last_text, :photo, :tour_name, :id, :pass_criteria
   @question_raw
 
   def initialize(question_xml)
@@ -10,8 +10,10 @@ class Question
     @text = "*Вопрос*: #{remove_shit(extract('Question'))}"
     @comment = add_comment
     @answer_original = remove_shit(extract('Answer'))
-    @answer_trimmed = remove_shit_at_all(@answer_original)
-    @answer_text = "#{@answer_original}\n#{@comment}"
+    @pass_criteria = remove_shit(extract('PassCriteria'))
+    @answers_trimmed = all_answers
+    add_to_answer = @pass_criteria.empty? ? '' : "/#{@pass_criteria}"
+    @answer_text = "#{@answer_original}#{add_to_answer}\n#{@comment}"
     @photo = photo_value
     @tour_name = extract_tour_name
     @id = extract('Number')
@@ -61,5 +63,13 @@ class Question
     else
       probable_tour_name
     end
+  end
+
+  def all_answers
+    answers = [remove_shit_at_all(@answer_original)]
+    @pass_criteria.split(/\.|,/).each do |e|
+      answers.push(remove_shit_at_all(e))
+    end
+    answers
   end
 end

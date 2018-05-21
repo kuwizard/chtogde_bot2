@@ -46,11 +46,13 @@ class Game
   end
 
   def check_suggestion(suggested)
-    if match?(suggested, @question.answer_trimmed)
+    answers = @question.answers_trimmed
+    if match?(suggested, answers)
       @asked = false
-      "\"*#{suggested}*\" - это правильный ответ!\n#{@question.comment}"
+      leftover = leftover(suggested, answers)
+      "*#{suggested}*#{leftover} - это правильный ответ!\n#{@question.comment}"
     else
-      "\"*#{suggested}*\" - это неправильный ответ."
+      "*#{suggested}* - это неправильный ответ."
     end
   end
 
@@ -64,12 +66,17 @@ class Game
 
   private
 
-  def match?(expected_raw, actual_raw)
-    expected = UnicodeUtils.downcase(expected_raw)
-    actual = UnicodeUtils.downcase(actual_raw)
-    matched = expected == actual
-    log.info("Suggested: #{expected}, answer is: #{actual_raw}. I think it is #{matched}") unless ENV['TEST']
-    matched
+  def match?(expected_raw, actual_array)
+    expected = downcase(expected_raw)
+    actual = actual_array.map { |e| downcase(e) }
+    match = actual.include?(expected)
+    log.info("Suggested: #{expected}, answers: #{actual_array}. I think it is #{match}") unless ENV['TEST']
+    match
+  end
+
+  def leftover(suggested, answers)
+    leftover = answers.select { |e| downcase(e) != downcase(suggested) }
+    "/#{leftover.join('/')}"
   end
 
   def log
@@ -83,10 +90,10 @@ class Game
   end
 
   def add_random_questions(up_to_size = 3)
-    # @question_collector_thread = Thread.new do
+    @question_collector_thread = Thread.new do
       amount_needed = up_to_size - @questions.size
       @questions += QuestionCollector.random_questions(amount_needed) unless amount_needed < 1
-    # end
+    end
   end
 
   def add_specific_question(tour_name:, question_id:)
@@ -110,5 +117,9 @@ class Game
       else
         fail "Unknown answer mode '#{mode}'"
     end
+  end
+
+  def downcase(string)
+    UnicodeUtils.downcase(string)
   end
 end

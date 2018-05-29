@@ -10,4 +10,8 @@ module Common
     message = Telegram::Bot::Types::Message.new(text: text, chat: @chat)
     @processor.process_message(message)
   end
+
+  def change_question_to(question)
+    GameManager.instance.set_test_data_file(question)
+  end
 end

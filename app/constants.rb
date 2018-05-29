@@ -13,4 +13,5 @@ module Constants
   RANDOM_QUESTION_URL = 'https://db.chgk.info/xml/random/'
   TOUR_QUESTION_URL = 'https://db.chgk.info/tour/%tour_name/xml/'
   IMAGE_URL = 'http://db.chgk.info/images/db/'
+  FILE_PATH = '../tests/data/'
 end

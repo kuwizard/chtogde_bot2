@@ -2,18 +2,15 @@ require 'nokogiri'
 require_relative 'constants'
 
 class Question
-  attr_reader :text, :comment, :answer_original, :answers_trimmed, :answer_text, :answer_to_last_text, :photo, :tour_name, :id, :pass_criteria
+  attr_reader :text, :comment, :answers_trimmed, :answer_text, :answer_to_last_text, :photo, :tour_name, :id
   @question_raw
 
   def initialize(question_xml)
     @question_raw = question_xml
     @text = "*Вопрос*: #{remove_shit(extract('Question'))}"
     @comment = add_comment
-    @answer_original = remove_shit(extract('Answer'))
-    @pass_criteria = remove_shit(extract('PassCriteria'))
-    @answers_trimmed = all_answers
-    add_to_answer = @pass_criteria.empty? ? '' : "/#{@pass_criteria}"
-    @answer_text = "#{@answer_original}#{add_to_answer}\n#{@comment}"
+    @answers_trimmed = all_answers(remove_shit(extract('Answer')), remove_shit(extract('PassCriteria')))
+    @answer_text = "#{all_answers_to_text(@answers_trimmed)}\n#{@comment}"
     @photo = photo_value
     @tour_name = extract_tour_name
     @id = extract('Number')
@@ -65,11 +62,15 @@ class Question
     end
   end
 
-  def all_answers
-    answers = [remove_shit_at_all(@answer_original)]
-    @pass_criteria.split(/\.|,/).each do |e|
+  def all_answers(answer_original, pass_criterias)
+    answers = [remove_shit_at_all(answer_original)]
+    pass_criterias.split(/\.|,/).each do |e|
       answers.push(remove_shit_at_all(e))
     end
     answers
+  end
+
+  def all_answers_to_text(answers)
+    answers.join('/')
   end
 end

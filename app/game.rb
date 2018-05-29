@@ -6,17 +6,12 @@ require_relative 'question'
 
 class Game
   attr_reader :asked, :question_has_photo
-  @logger
-  @questions
-  @question
-  @chat_id
-  @question_collector_thread
-  @cheater_detected
 
-  def initialize(chat_id:, tour_name: nil, question_id: nil, asked: false)
+  def initialize(chat_id:, tour_name: nil, question_id: nil, asked: false, data_file: nil)
     @asked = false
     @questions = []
     @chat_id = chat_id
+    @question_collector = QuestionCollector.new(data_file)
     if tour_name && question_id # Which means we're restoring games from DB
       add_specific_question(tour_name: tour_name, question_id: question_id)
       @asked = asked == 't'
@@ -64,6 +59,12 @@ class Game
     @question.text
   end
 
+  def set_data_file(name)
+    if !@question_collector.nil? && @question_collector.file != name
+      @question_collector = QuestionCollector.new(name)
+    end
+  end
+
   private
 
   def match?(expected_raw, actual_array)
@@ -76,7 +77,7 @@ class Game
 
   def leftover(suggested, answers)
     leftover = answers.select { |e| downcase(e) != downcase(suggested) }
-    "/#{leftover.join('/')}"
+    leftover.empty? ? '' : "/#{leftover.join('/')}"
   end
 
   def log
@@ -92,12 +93,12 @@ class Game
   def add_random_questions(up_to_size = 3)
     @question_collector_thread = Thread.new do
       amount_needed = up_to_size - @questions.size
-      @questions += QuestionCollector.random_questions(amount_needed) unless amount_needed < 1
+      @questions += @question_collector.random_questions(amount_needed) unless amount_needed < 1
     end
   end
 
   def add_specific_question(tour_name:, question_id:)
-    @questions << QuestionCollector.specific_question(tour_name: tour_name, question_id: question_id)
+    @questions << @question_collector.specific_question(tour_name: tour_name, question_id: question_id)
     new_question
   end
 

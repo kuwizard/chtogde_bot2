@@ -10,13 +10,14 @@ class GameManager
   def game(id)
     @games = {} if @games.nil?
     if @games.include?(id)
+      @games[id].set_data_file(@data_file) if @data_file
       @games[id]
     end
   end
 
   def start(id)
     @games = {} if @games.nil?
-    @games[id] = Game.new(chat_id: id) unless @games.include?(id)
+    @games[id] = Game.new(chat_id: id, data_file: @data_file) unless @games.include?(id)
     Constants::START
   end
 
@@ -45,7 +46,10 @@ class GameManager
     games_of_random_mode.each do |chat_id|
       chat_id = chat_id.to_i
       question = @db.get_question(:random, chat_id: chat_id)
-      @games[chat_id] = Game.new(chat_id: chat_id, tour_name: question['tour_name'], question_id: question['question_id'], asked: question['asked'])
+      @games[chat_id] = Game.new(chat_id: chat_id,
+                                 tour_name: question['tour_name'],
+                                 question_id: question['question_id'],
+                                 asked: question['asked'])
     end
   end
 
@@ -54,5 +58,9 @@ class GameManager
       @db.set_asked_to_false(:random, chat_id: @chat_id)
     end
     game(id).post_answer(mode: mode)
+  end
+
+  def set_test_data_file(name)
+    @data_file = name
   end
 end

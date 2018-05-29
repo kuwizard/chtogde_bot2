@@ -71,4 +71,14 @@ class ScenariosWithTextTest < Test::Unit::TestCase
     expected_previous = "*Ответ на предыдущий вопрос*: Быть\n*Комментарий*: Замечательный комментарий."
     assert_equal(expected_previous, reply.previous_answer, 'Incorrect message on /next after previous question just asked')
   end
+
+  def test_start_after_asked_does_not_erase_question
+    send_message('/start')
+    send_message('/next')
+    send_message('/start')
+    reply = send_message('/быть')
+    expected = "*быть* - это правильный ответ!\n*Комментарий*: Замечательный комментарий."
+    assert_equal(expected, reply.message, 'Incorrect message in case when we sent /start after question being asked')
+    assert_nil(reply.previous_answer, 'Previous answer is not nil')
+  end
 end

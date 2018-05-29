@@ -20,17 +20,14 @@ class Game
     end
   end
 
-  def new_question(db: nil)
+  def new_question
     @asked = true
     @question_collector_thread.join unless @question_collector_thread.nil?
     @question = @questions.first
     @questions.shift
     @question_has_photo = !@question.photo.nil?
     add_random_questions(1)
-    if db
-      db.save_asked(:random, chat_id: @chat_id, tour_name: @question.tour_name, question_id: @question.id)
-    end
-    @question.text
+    @question
   end
 
   def post_answer(mode: :normal)
@@ -99,7 +96,7 @@ class Game
 
   def add_specific_question(tour_name:, question_id:)
     @questions << @question_collector.specific_question(tour_name: tour_name, question_id: question_id)
-    new_question
+    new_question.text
   end
 
   def cheated_text

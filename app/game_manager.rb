@@ -55,9 +55,17 @@ class GameManager
 
   def post_answer_to_game(id, mode:)
     unless mode == :i_am_a_cheater
-      @db.set_asked_to_false(:random, chat_id: @chat_id)
+      @db.set_asked_to_false(:random, chat_id: id)
     end
     game(id).post_answer(mode: mode)
+  end
+
+  def new_question_for_game(id)
+    new_question = game(id).new_question
+    if @db
+      @db.save_asked(:random, chat_id: id, tour_name: new_question.tour_name, question_id: new_question.id)
+    end
+    new_question.text
   end
 
   def set_test_data_file(name)

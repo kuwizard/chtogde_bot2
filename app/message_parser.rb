@@ -61,7 +61,7 @@ class MessageParser
     if GameManager.instance.game(id).asked
       previous_answer = GameManager.instance.post_answer_to_game(id, mode: :to_last)
     end
-    new_question = GameManager.instance.game(id).new_question
+    new_question = GameManager.instance.new_question_for_game(id)
     reply = Reply.new(new_question, id, previous_answer)
     reply.markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: keyboard(id, private))
     if GameManager.instance.game(id).question_has_photo

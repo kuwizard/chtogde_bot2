@@ -160,7 +160,7 @@ class TextMessagesTest < Test::Unit::TestCase
   def test_answer_button
     send_message('/start')
     reply = send_message('/next')
-    answer_button = reply.markup.inline_keyboard[0][0]
+    answer_button = reply.answer_button
     assert_instance_of(Telegram::Bot::Types::InlineKeyboardButton, answer_button, 'Incorrect class of answer button')
     assert_equal('answer123', answer_button.callback_data, 'Incorrect callback data on answer button')
     assert_equal('Ответ', answer_button.text, 'Incorrect text on answer button')
@@ -169,7 +169,7 @@ class TextMessagesTest < Test::Unit::TestCase
   def test_next_button
     send_message('/start')
     reply = send_message('/next')
-    next_button = reply.markup.inline_keyboard[0][1]
+    next_button = reply.next_button
     assert_instance_of(Telegram::Bot::Types::InlineKeyboardButton, next_button, 'Incorrect class of next button')
     assert_equal('next123', next_button.callback_data, 'Incorrect callback data on next button')
     assert_equal('Следующий', next_button.text, 'Incorrect text on next button')

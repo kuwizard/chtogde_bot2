@@ -8,9 +8,6 @@ class BotProcessor
     if message.is_a?(Telegram::Bot::Types::Message)
       message.text = message.text.gsub(Constants::BOT_NAME, '') unless message.text.nil?
     end
-    if message.is_a?(Telegram::Bot::Types::CallbackQuery)
-      answer_callback(message.id)
-    end
 
     @parser.parse_message(message)
   end
@@ -18,6 +15,9 @@ class BotProcessor
   def post_reply(reply)
     chat_id = reply.chat_id
 
+    if reply.callback_id
+      answer_callback(reply.callback_id)
+    end
     if reply.previous_answer
       post(reply.previous_answer, chat_id)
     end

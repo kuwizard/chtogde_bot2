@@ -10,13 +10,13 @@ class MessageParser
       when Telegram::Bot::Types::CallbackQuery
         if message.data.include?('answer')
           message.data.gsub!('answer', '')
-          Reply.new(GameManager.instance.game(message.data.to_i).post_answer, message.data)
+          Reply.new(GameManager.instance.game(message.data.to_i).post_answer, message.data, callback_id: message.id)
         elsif message.data.include?('tell')
           message.data.gsub!('tell', '')
-          Reply.new(GameManager.instance.game(message.data.to_i).post_answer(mode: :i_am_a_cheater), message.from.id)
+          Reply.new(GameManager.instance.game(message.data.to_i).post_answer(mode: :i_am_a_cheater), message.from.id, callback_id: message.id)
         elsif message.data.include?('next')
           message.data.gsub!('next', '')
-          next_question(message.data.to_i, private?(message))
+          next_question(message.data.to_i, private?(message), callback_id: message.id)
         else
           fail "Cannot parse message.data '#{message.data}'"
         end
@@ -57,15 +57,18 @@ class MessageParser
 
   private
 
-  def next_question(id, private)
+  def next_question(id, private, callback_id: nil)
     if GameManager.instance.game(id).asked
       previous_answer = GameManager.instance.post_answer_to_game(id, mode: :to_last)
     end
     new_question = GameManager.instance.new_question_for_game(id)
-    reply = Reply.new(new_question, id, previous_answer)
+    reply = Reply.new(new_question, id, previous_answer: previous_answer)
     reply.markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: keyboard(id, private))
     if GameManager.instance.game(id).question_has_photo
       reply.photo = GameManager.instance.game(id).photo
+    end
+    if callback_id
+      reply.callback_id = callback_id
     end
     reply
   end

@@ -22,12 +22,12 @@ class DatabaseMock < Database
     if list_of_games(mode).include?(chat_id)
       delete_random(mode, chat_id: chat_id)
     end
-    @data.push({ chat_id: chat_id, tour_name: tour_name, question_id: question_id, asked: true })
+    @data.push({ chat_id: chat_id, tour_name: tour_name, question_id: question_id, asked: 't' })
   end
 
   def set_asked_to_false(_mode, chat_id:)
     @data.each do |e|
-      e['asked'] = false if e[:chat_id] == chat_id
+      e[:asked] = 'f' if e[:chat_id] == chat_id
     end
   end
 

@@ -21,4 +21,9 @@ module Common
   def change_question_to(question)
     GameManager.instance.set_test_data_file(question)
   end
+
+  def erase_and_restore_all_games
+    GameManager.instance.erase_all_games
+    GameManager.instance.restore_previous_games(@db)
+  end
 end

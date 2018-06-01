@@ -49,11 +49,12 @@ class GameManager
       @games[chat_id] = Game.new(chat_id: chat_id,
                                  tour_name: question['tour_name'],
                                  question_id: question['question_id'],
-                                 asked: question['asked'])
+                                 asked: question['asked'],
+                                 data_file: @data_file)
     end
   end
 
-  def post_answer_to_game(id, mode:)
+  def post_answer_to_game(id, mode: :normal)
     unless mode == :i_am_a_cheater
       @db.set_asked_to_false(:random, chat_id: id)
     end
@@ -70,5 +71,10 @@ class GameManager
 
   def set_test_data_file(name)
     @data_file = name
+  end
+
+  # TODO: Switch GameManager to object rather than Singleton and remove this destructive method
+  def erase_all_games
+    @games = nil
   end
 end

@@ -10,10 +10,10 @@ class MessageParser
       when Telegram::Bot::Types::CallbackQuery
         if message.data.include?('answer')
           message.data.gsub!('answer', '')
-          Reply.new(GameManager.instance.game(message.data.to_i).post_answer, message.data, callback_id: message.id)
+          Reply.new(GameManager.instance.post_answer_to_game(message.data.to_i), message.data, callback_id: message.id)
         elsif message.data.include?('tell')
           message.data.gsub!('tell', '')
-          Reply.new(GameManager.instance.game(message.data.to_i).post_answer(mode: :i_am_a_cheater), message.from.id, callback_id: message.id)
+          Reply.new(GameManager.instance.post_answer_to_game(message.data.to_i, mode: :i_am_a_cheater), message.from.id, callback_id: message.id)
         elsif message.data.include?('next')
           message.data.gsub!('next', '')
           next_question(message.data.to_i, private?(message), callback_id: message.id)
@@ -41,7 +41,7 @@ class MessageParser
             when '/next'
               next_question(id, private?(message))
             when '/answer'
-              Reply.new(GameManager.instance.game(id).post_answer, id)
+              Reply.new(GameManager.instance.post_answer_to_game(id), id)
             when '/repeat'
               Reply.new(GameManager.instance.game(id).question, id)
             else

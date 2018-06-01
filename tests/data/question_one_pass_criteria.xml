@@ -4,10 +4,10 @@
     <tournamentFileName>tour.txt</tournamentFileName>
     <QuestionId>123456</QuestionId>
     <ParentId>12345</ParentId>
-    <Number>2</Number>
+    <Number>1</Number>
     <Type>Ч</Type>
     <TypeNum>1</TypeNum>
-    <TextId>tour.1-2</TextId>
+    <TextId>tour.1-1</TextId>
     <Question>
     Быть или не быть?
     </Question>

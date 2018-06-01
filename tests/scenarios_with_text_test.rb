@@ -81,4 +81,12 @@ class ScenariosWithTextTest < Test::Unit::TestCase
     assert_equal(expected, reply.message, 'Incorrect message in case when we sent /start after question being asked')
     assert_nil(reply.previous_answer, 'Previous answer is not nil')
   end
+
+  def test_next_after_answer_does_not_contain_previous_answer
+    send_message('/start')
+    send_message('/next')
+    send_message('/answer')
+    reply = send_message('/next')
+    assert_nil(reply.previous_answer, 'Previous answer is not nil')
+  end
 end

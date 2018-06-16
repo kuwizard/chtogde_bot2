@@ -61,6 +61,12 @@ class GameManager
     game(id).post_answer(mode: mode)
   end
 
+  def check_suggestion_in_game(id, message)
+    correct, text_to_return = game(id).check_suggestion(message)
+    @db.set_asked_to_false(:random, chat_id: id) if correct
+    text_to_return
+  end
+
   def new_question_for_game(id)
     new_question = game(id).new_question
     if @db

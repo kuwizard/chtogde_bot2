@@ -38,4 +38,43 @@
     <tournamentPlayedAt2>1985-05-03</tournamentPlayedAt2>
     <Notices></Notices>
   </question>
+  <question>
+    <tourFileName>tour.1</tourFileName>
+    <tournamentFileName>tour.txt</tournamentFileName>
+    <QuestionId>123456</QuestionId>
+    <ParentId>12345</ParentId>
+    <Number>2</Number>
+    <Type>Ч</Type>
+    <TypeNum>1</TypeNum>
+    <TextId>tour.1-2</TextId>
+    <Question>
+      Вопрос со звёздочкой
+    </Question>
+    <Answer>Бальзам.</Answer>
+    <PassCriteria/>
+    <Authors>Аффтор</Authors>
+    <Sources>
+      1. http://www.bbb.ru/xxx.htm 2. Ещё один источник
+    </Sources>
+    <Comments>
+      Ну, вы поняли...
+    </Comments>
+    <Rating/>
+    <RatingNumber/>
+    <Complexity/>
+    <Topic/>
+    <ProcessedBySearch/>
+    <parent_text_id>tour.1</parent_text_id>
+    <tourId>01</tourId>
+    <tournamentId>02</tournamentId>
+    <tourTitle>2 тур</tourTitle>
+    <tournamentTitle>Заголовок тура</tournamentTitle>
+    <tourType>Т</tourType>
+    <tournamentType>Ч</tournamentType>
+    <tourPlayedAt>1985-05-03</tourPlayedAt>
+    <tournamentPlayedAt>1985-05-03</tournamentPlayedAt>
+    <tourPlayedAt2>1985-05-03</tourPlayedAt2>
+    <tournamentPlayedAt2>1985-05-03</tournamentPlayedAt2>
+    <Notices></Notices>
+  </question>
 </search>

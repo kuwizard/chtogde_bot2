@@ -46,7 +46,7 @@ class MessageParser
               Reply.new(GameManager.instance.game(id).question, id)
             else
               message_text = message.to_s.delete('/')
-              check_result = GameManager.instance.game(id).check_suggestion(message_text)
+              check_result = GameManager.instance.check_suggestion_in_game(id, message_text)
               Reply.new(check_result, id)
           end
         end

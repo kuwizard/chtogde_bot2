@@ -9,7 +9,7 @@ class ScenariosWithTextTest < Test::Unit::TestCase
     @chat = Telegram::Bot::Types::Chat.new(type: 'private', id: '123', first_name: 'Test', last_name: 'User')
     db = DatabaseMock.new({})
     GameManager.instance.restore_previous_games(db)
-    change_question_to('question_no_pass_criteria.xml')
+    change_question_to('two_questions_no_pass_criteria.xml')
   end
 
   def teardown
@@ -61,10 +61,9 @@ class ScenariosWithTextTest < Test::Unit::TestCase
     assert_nil(reply.previous_answer, 'Previous answer is not nil')
   end
 
-  def test_next_on_asked
+  def test_next_on_asked_shows_next_question
     send_message('/start')
     send_message('/next')
-    change_question_to('second_question.xml')
     reply = send_message('/next')
     expected = '*Вопрос*: Вопрос со звёздочкой'
     assert_equal(expected, reply.message, 'Incorrect message on /next after previous question just asked')
@@ -80,5 +79,30 @@ class ScenariosWithTextTest < Test::Unit::TestCase
     expected = "*быть* - это правильный ответ!\n*Комментарий*: Замечательный комментарий."
     assert_equal(expected, reply.message, 'Incorrect message in case when we sent /start after question being asked')
     assert_nil(reply.previous_answer, 'Previous answer is not nil')
+  end
+
+  def test_next_after_surrender_does_not_contain_previous_answer
+    send_message('/start')
+    send_message('/next')
+    send_message('/answer')
+    reply = send_message('/next')
+    assert_nil(reply.previous_answer, 'Previous answer is not nil')
+  end
+
+  def test_next_after_answer_shows_second_question
+    send_message('/start')
+    send_message('/next')
+    send_message('/быть')
+    reply = send_message('/next')
+    expected = '*Вопрос*: Вопрос со звёздочкой'
+    assert_equal(expected, reply.message, 'Second question after correct answer is incorrect')
+  end
+
+  def test_next_after_answer_does_not_have_previous_answer
+    send_message('/start')
+    send_message('/next')
+    send_message('/быть')
+    reply = send_message('/next')
+    assert_nil(reply.previous_answer, 'Next after correct answer does not have previous answer')
   end
 end

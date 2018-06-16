@@ -42,9 +42,9 @@ class Game
     if match?(suggested, answers)
       @asked = false
       leftover = leftover(suggested, answers)
-      "*#{suggested}*#{leftover} - это правильный ответ!\n#{@question.comment}"
+      return true, "*#{suggested}*#{leftover} - это правильный ответ!\n#{@question.comment}"
     else
-      "*#{suggested}* - это неправильный ответ."
+      return false, "*#{suggested}* - это неправильный ответ."
     end
   end
 

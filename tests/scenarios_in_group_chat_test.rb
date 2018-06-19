@@ -17,38 +17,43 @@ class ScenariosInGroupChatTest < Test::Unit::TestCase
   def test_answer_correctly_in_group
     send_message('/start')
     send_message('/next')
-    reply = send_message('/быть')
+     send_message('/быть')
     expected = "*быть* - это правильный ответ!\n*Комментарий*: Замечательный комментарий."
-    assert_equal(expected, reply.message, 'Incorrect message on correct answer in group')
-    assert_nil(reply.previous_answer, 'Previous answer is not nil')
+    assert_equal(expected, @reply.message, 'Incorrect message on correct answer in group')
+    assert_nil(@reply.previous_answer, 'Previous answer is not nil')
   end
 
   def test_repeat_in_group
     send_message('/start')
     send_message('/next')
-    reply = send_message('/repeat')
+    send_message('/repeat')
     expected = '*Вопрос*: Быть или не быть?'
-    assert_equal(expected, reply.message, 'Incorrect message on /repeat after answer in group')
-    assert_nil(reply.previous_answer, 'Previous answer is not nil')
+    assert_equal(expected, @reply.message, 'Incorrect message on /repeat after answer in group')
+    assert_nil(@reply.previous_answer, 'Previous answer is not nil')
   end
 
   def test_surrender_in_group
     send_message('/start')
     send_message('/next')
-    reply = send_message('/answer')
+    send_message('/answer')
     expected = "*Ответ*: Быть\n*Комментарий*: Замечательный комментарий."
-    assert_equal(expected, reply.message, 'Incorrect message on /answer in group')
-    assert_nil(reply.previous_answer, 'Previous answer is not nil')
+    assert_equal(expected, @reply.message, 'Incorrect message on /answer in group')
+    assert_nil(@reply.previous_answer, 'Previous answer is not nil')
   end
 
   def test_next_on_asked_in_group
     send_message('/start')
     send_message('/next')
     change_question_to('second_question.xml')
-    reply = send_message('/next')
+    send_message('/next')
     expected = '*Вопрос*: Вопрос со звёздочкой'
-    assert_equal(expected, reply.message, 'Incorrect message on /next after previous question just asked in group')
+    assert_equal(expected, @reply.message, 'Incorrect message on /next after previous question just asked in group')
     expected_previous = "*Ответ на предыдущий вопрос*: Быть\n*Комментарий*: Замечательный комментарий."
-    assert_equal(expected_previous, reply.previous_answer, 'Incorrect message on /next after previous question just asked in group')
+    assert_equal(expected_previous, @reply.previous_answer, 'Incorrect message on /next after previous question just asked in group')
+  end
+
+  def test_three_buttons
+    send_message('/start')
+    send_message('/next')
   end
 end

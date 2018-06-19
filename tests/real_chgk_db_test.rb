@@ -16,13 +16,13 @@ class RealChgkDBTest < Test::Unit::TestCase
     @processor = BotProcessorMock.new
     send_message('/start')
     send_message('/next')
-    assert_match(/\*Вопрос\*: .*/, reply.message, '')
+    assert_match(/\*Вопрос\*: .*/, @reply.message, '')
   end
 
   def test_repeat
     db = { chat_id: 123, question_id: '1', tour_name: 'okno13.2', asked: 't'}
     @processor = BotProcessorMock.new(db)
-    reply = send_message('/repeat')
-    assert_equal('*Вопрос*: Предки домашних кур, бАнкивские джунглевые куры, куда меньше своих потомков и поэтому опровергают известную пренебрежительную поговорку. А каким образом?', reply.message, 'Incorrect question')
+    send_message('/repeat')
+    assert_equal('*Вопрос*: Предки домашних кур, бАнкивские джунглевые куры, куда меньше своих потомков и поэтому опровергают известную пренебрежительную поговорку. А каким образом?', @reply.message, 'Incorrect question')
   end
 end

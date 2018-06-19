@@ -18,9 +18,9 @@ class RestoringFromDbTest < Test::Unit::TestCase
     send_message('/start')
     send_message('/next')
     erase_and_restore_all_games
-    reply = send_message('/answer')
+    send_message('/answer')
     expected = "*Ответ*: Быть\n*Комментарий*: Замечательный комментарий."
-    assert_equal(expected, reply.message, 'Incorrect message on /answer')
+    assert_equal(expected, @reply.message, 'Incorrect message on /answer')
   end
 
   def test_next_after_surrender_does_not_contain_previous_answer
@@ -28,8 +28,8 @@ class RestoringFromDbTest < Test::Unit::TestCase
     send_message('/next')
     send_message('/answer')
     erase_and_restore_all_games
-    reply = send_message('/next')
-    assert_nil(reply.previous_answer, 'Previous answer is not nil after restoring from db')
+    send_message('/next')
+    assert_nil(@reply.previous_answer, 'Previous answer is not nil after restoring from db')
   end
 
   def test_next_after_answer_does_not_contain_previous_answer
@@ -37,7 +37,7 @@ class RestoringFromDbTest < Test::Unit::TestCase
     send_message('/next')
     send_message('/быть')
     erase_and_restore_all_games
-    reply = send_message('/next')
-    assert_nil(reply.previous_answer, 'Previous answer is not nil after restoring from db')
+    send_message('/next')
+    assert_nil(@reply.previous_answer, 'Previous answer is not nil after restoring from db')
   end
 end

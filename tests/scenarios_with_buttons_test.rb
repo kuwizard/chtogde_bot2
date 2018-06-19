@@ -14,6 +14,12 @@ class ScenariosWithButtonsTest < Test::Unit::TestCase
     send_message('/stop')
   end
 
+  def test_two_buttons
+    send_message('/start')
+    send_message('/next')
+    assert_equal(2, @reply.buttons_count, 'Incorrect number of buttons in reply')
+  end
+
   def test_answer_button
     send_message('/start')
     send_message('/next')

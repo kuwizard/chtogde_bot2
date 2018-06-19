@@ -9,6 +9,7 @@ require_relative '../mocks/message_parser_mock'
 require_relative '../mocks/game_manager_mock'
 require_relative '../mocks/game_mock'
 require_relative '../mocks/question_collector_mock'
+require_relative 'data/users'
 
 module Common
   def send_message(text)
@@ -16,10 +17,10 @@ module Common
     @reply = @processor.process_message(message)
   end
 
-  def send_button_click(button)
+  def send_button_click(button, from: nil)
     @message_id = Random.new.rand(999).to_s
     msg = Telegram::Bot::Types::Message.new(chat: @chat)
-    message = Telegram::Bot::Types::CallbackQuery.new(data: button.callback_data, id: @message_id, message: msg)
+    message = Telegram::Bot::Types::CallbackQuery.new(data: button.callback_data, id: @message_id, message: msg, from: Users::TEST_USER)
     @reply = @processor.process_message(message)
   end
 

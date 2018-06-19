@@ -105,7 +105,7 @@ class Game
         "*Ответ на предыдущий вопрос#{cheated_text}*: "
       when :i_am_a_cheater
         @cheater_detected = true
-        '*Ответ *: '
+        '*Ответ*: '
       else
         fail "Unknown answer mode '#{mode}'"
     end

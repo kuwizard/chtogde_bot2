@@ -1,6 +1,6 @@
 class BotProcessor
-  def initialize(parser, bot = nil)
-    @parser = parser
+  def initialize(bot = nil)
+    @parser = MessageParser.new
     @bot = bot
   end
 

@@ -7,11 +7,11 @@ require_relative 'question'
 class Game
   attr_reader :asked, :question_has_photo
 
-  def initialize(chat_id:, tour_name: nil, question_id: nil, asked: false, data_file: nil)
+  def initialize(chat_id:, tour_name: nil, question_id: nil, asked: false)
     @asked = false
     @questions = []
     @chat_id = chat_id
-    @question_collector = QuestionCollector.new(data_file)
+    @question_collector ||= QuestionCollector.new
     if tour_name && question_id # Which means we're restoring games from DB
       add_specific_question(tour_name: tour_name, question_id: question_id)
       @asked = asked == 't'
@@ -54,12 +54,6 @@ class Game
 
   def question
     @question.text
-  end
-
-  def set_data_file(name)
-    if !@question_collector.nil? && @question_collector.file != name
-      @question_collector = QuestionCollector.new(name)
-    end
   end
 
   private

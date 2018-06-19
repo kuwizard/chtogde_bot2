@@ -6,10 +6,8 @@ class TextMessagesTest < Test::Unit::TestCase
   include Common
 
   def setup
-    @processor = BotProcessor.new(MessageParser.instance)
+    @processor = BotProcessorMock.new
     @chat = Telegram::Bot::Types::Chat.new(type: 'private', id: '123', first_name: 'Test', last_name: 'User')
-    db = DatabaseMock.new({})
-    GameManager.instance.restore_previous_games(db)
     change_question_to('two_questions_no_pass_criteria.xml')
   end
 

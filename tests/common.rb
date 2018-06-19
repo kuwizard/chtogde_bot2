@@ -4,6 +4,11 @@ require_relative '../app/bot_processor'
 require_relative '../app/message_parser'
 require_relative '../app/constants'
 require_relative '../mocks/database_mock'
+require_relative '../mocks/bot_processor_mock'
+require_relative '../mocks/message_parser_mock'
+require_relative '../mocks/game_manager_mock'
+require_relative '../mocks/game_mock'
+require_relative '../mocks/question_collector_mock'
 
 module Common
   def send_message(text)
@@ -19,11 +24,11 @@ module Common
   end
 
   def change_question_to(question)
-    GameManager.instance.set_test_data_file(question)
+    @processor.set_test_data_file(question)
   end
 
   def erase_and_restore_all_games
-    GameManager.instance.erase_all_games
-    GameManager.instance.restore_previous_games(@db)
+    @processor.erase_all_games
+    @processor.restore_previous_games
   end
 end

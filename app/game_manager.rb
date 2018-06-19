@@ -1,23 +1,19 @@
-require 'singleton'
 require_relative 'game'
 require_relative 'db'
 
 class GameManager
-  include Singleton
-
-  attr_accessor :games
+  def initialize
+    restore_previous_games
+  end
 
   def game(id)
     @games = {} if @games.nil?
-    if @games.include?(id)
-      @games[id].set_data_file(@data_file) if @data_file
-      @games[id]
-    end
+    @games[id] if @games.include?(id)
   end
 
   def start(id)
     @games = {} if @games.nil?
-    @games[id] = Game.new(chat_id: id, data_file: @data_file) unless @games.include?(id)
+    @games[id] = Game.new(chat_id: id) unless @games.include?(id)
     Constants::START
   end
 
@@ -35,12 +31,8 @@ class GameManager
     @games.include?(id)
   end
 
-  def restore_previous_games(db = nil)
-    if db.nil?
-      @db = Database.new
-    else
-      @db = db
-    end
+  def restore_previous_games
+    @db ||= Database.new
     @games = {} if @games.nil?
     games_of_random_mode = @db.list_of_games(:random)
     games_of_random_mode.each do |chat_id|
@@ -49,8 +41,7 @@ class GameManager
       @games[chat_id] = Game.new(chat_id: chat_id,
                                  tour_name: question['tour_name'],
                                  question_id: question['question_id'],
-                                 asked: question['asked'],
-                                 data_file: @data_file)
+                                 asked: question['asked'])
     end
   end
 
@@ -73,14 +64,5 @@ class GameManager
       @db.save_asked(:random, chat_id: id, tour_name: new_question.tour_name, question_id: new_question.id)
     end
     new_question.text
-  end
-
-  def set_test_data_file(name)
-    @data_file = name
-  end
-
-  # TODO: Switch GameManager to object rather than Singleton and remove this destructive method
-  def erase_all_games
-    @games = nil
   end
 end

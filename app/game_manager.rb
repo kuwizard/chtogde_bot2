@@ -41,7 +41,8 @@ class GameManager
       @games[chat_id] = Game.new(chat_id: chat_id,
                                  tour_name: question['tour_name'],
                                  question_id: question['question_id'],
-                                 asked: question['asked'])
+                                 asked: question['asked'],
+                                 sources: question['sources'])
     end
   end
 
@@ -60,9 +61,14 @@ class GameManager
 
   def new_question_for_game(id)
     new_question = game(id).new_question
-    if @db
-      @db.save_asked(:random, chat_id: id, tour_name: new_question.tour_name, question_id: new_question.id)
-    end
+    @db.save_asked(:random, chat_id: id, tour_name: new_question.tour_name, question_id: new_question.id)
     new_question.text
+  end
+
+  def change_sources_state(id)
+    game(id).change_sources_state
+    current_state = game(id).sources
+    @db.set_sources_state(:random, chat_id: id, sources: current_state)
+    current_state ? Constants::SOURCES_NOW_ON : Constants::SOURCES_NOW_OFF
   end
 end

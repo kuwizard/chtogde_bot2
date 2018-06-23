@@ -20,7 +20,7 @@ class RealChgkDBTest < Test::Unit::TestCase
   end
 
   def test_repeat
-    db = { chat_id: 123, question_id: '1', tour_name: 'okno13.2', asked: 't'}
+    db = { chat_id: 123, question_id: '1', tour_name: 'okno13.2', asked: 't', sources: 'f' }
     @processor = BotProcessorMock.new(db)
     send_message('/repeat')
     assert_equal('*Вопрос*: Предки домашних кур, бАнкивские джунглевые куры, куда меньше своих потомков и поэтому опровергают известную пренебрежительную поговорку. А каким образом?', @reply.message, 'Incorrect question')

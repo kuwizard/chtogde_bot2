@@ -39,7 +39,6 @@ class ScenariosWithButtonsTest < Test::Unit::TestCase
   def test_next_button
     send_message('/start')
     send_message('/next')
-    change_question_to('second_question.xml')
     send_button_click(@reply.next_button)
     expected = '*Вопрос*: Вопрос со звёздочкой'
     assert_equal(expected, @reply.message, 'Incorrect message on next button after previous question just asked')
@@ -50,7 +49,6 @@ class ScenariosWithButtonsTest < Test::Unit::TestCase
   def test_callback_id_on_next_button
     send_message('/start')
     send_message('/next')
-    change_question_to('second_question.xml')
     send_button_click(@reply.next_button)
     assert_equal(@message_id, @reply.callback_id, 'Incorrect callback id on next button')
   end

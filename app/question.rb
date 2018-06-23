@@ -2,7 +2,7 @@ require 'nokogiri'
 require_relative 'constants'
 
 class Question
-  attr_reader :text, :comment, :answers_trimmed, :answer_text, :answer_to_last_text, :photo, :tour_name, :id
+  attr_reader :text, :comment, :answers_trimmed, :answer_text, :answer_to_last_text, :photo, :tour_name, :id, :sources
   @question_raw
 
   def initialize(question_xml)
@@ -14,6 +14,7 @@ class Question
     @photo = photo_value
     @tour_name = extract_tour_name
     @id = extract('Number')
+    @sources = remove_shit(extract('Sources'))
   end
 
   private
@@ -33,6 +34,7 @@ class Question
   def remove_shit(text)
     text.to_s.gsub(/\r/, ' ')
         .gsub(/\n/, ' ')
+        .gsub('_', "\\_")
         .gsub(/\(pic:.*\)/, '').strip
   end
 

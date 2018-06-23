@@ -16,7 +16,7 @@ class Database
   end
 
   def get_question(mode, chat_id:)
-    result = @db.query("SELECT tour_name, question_id, asked FROM #{mode_to_table(mode)} WHERE chat_id='#{chat_id}';")
+    result = @db.query("SELECT tour_name, question_id, asked, sources FROM #{mode_to_table(mode)} WHERE chat_id='#{chat_id}';")
     result[0]
   end
 
@@ -24,12 +24,16 @@ class Database
     if list_of_games(mode).include?(chat_id)
       @db.query("UPDATE #{mode_to_table(mode)} SET tour_name = '#{tour_name}', question_id = '#{question_id}', asked = true WHERE chat_id = '#{chat_id}';")
     else
-      @db.query("INSERT INTO #{mode_to_table(mode)} (chat_id, tour_name, question_id, asked) VALUES ('#{chat_id}', '#{tour_name}' ,'#{question_id}', true);")
+      @db.query("INSERT INTO #{mode_to_table(mode)} (chat_id, tour_name, question_id, asked, sources) VALUES ('#{chat_id}', '#{tour_name}' ,'#{question_id}', true, false);")
     end
   end
 
   def set_asked_to_false(mode, chat_id:)
     @db.query("UPDATE #{mode_to_table(mode)} SET asked = false WHERE chat_id = '#{chat_id}';")
+  end
+
+  def set_sources_state(mode, chat_id:, sources:)
+    @db.query("UPDATE #{mode_to_table(mode)} SET sources = #{sources} WHERE chat_id = '#{chat_id}';")
   end
 
   def delete_random(mode, chat_id:)

@@ -5,16 +5,18 @@ require_relative 'question_collector'
 require_relative 'question'
 
 class Game
-  attr_reader :asked, :question_has_photo
+  attr_reader :asked, :question_has_photo, :sources
 
-  def initialize(chat_id:, tour_name: nil, question_id: nil, asked: false)
+  def initialize(chat_id:, tour_name: nil, question_id: nil, asked: false, sources: false)
     @asked = false
+    @sources = false
     @questions = []
     @chat_id = chat_id
     @question_collector ||= QuestionCollector.new
     if tour_name && question_id # Which means we're restoring games from DB
       add_specific_question(tour_name: tour_name, question_id: question_id)
       @asked = asked == 't'
+      @sources = sources == 't'
     else
       add_random_questions(1)
     end
@@ -34,7 +36,9 @@ class Game
     unless mode == :i_am_a_cheater
       @asked = false
     end
-    answer_start(mode: mode) + @question.answer_text
+    answer = answer_start(mode: mode) + @question.answer_text
+    answer += formatted_sources(@question.sources) if @sources
+    answer
   end
 
   def check_suggestion(suggested)
@@ -42,7 +46,9 @@ class Game
     if match?(suggested, answers)
       @asked = false
       leftover = leftover(suggested, answers)
-      return true, "*#{suggested}*#{leftover} - это правильный ответ!\n#{@question.comment}"
+      output = "*#{suggested}*#{leftover} - это правильный ответ!\n#{@question.comment}"
+      output += formatted_sources(@question.sources) if @sources
+      return true, output
     else
       return false, "*#{suggested}* - это неправильный ответ."
     end
@@ -54,6 +60,10 @@ class Game
 
   def question
     @question.text
+  end
+
+  def change_sources_state
+    @sources = !@sources
   end
 
   private
@@ -109,6 +119,12 @@ class Game
       else
         fail "Unknown answer mode '#{mode}'"
     end
+  end
+
+  def formatted_sources(sources)
+    array = sources.split(/(\D|^)\d\.\ /).map(&:strip).reject(&:empty?)
+    output = array.empty? ? ' не указаны' : "\n#{array.join("\n")}"
+    "\n*Источники*:#{output}"
   end
 
   def downcase(string)

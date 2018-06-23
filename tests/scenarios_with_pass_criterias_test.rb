@@ -67,7 +67,6 @@ class ScenariosWithPassCriteriasTest < Test::Unit::TestCase
   def test_next_on_asked_with_pass_criteria
     send_message('/start')
     send_message('/next')
-    change_question_to('second_question.xml')
     send_message('/next')
     expected = '*Вопрос*: Вопрос со звёздочкой'
     assert_equal(expected, @reply.message, 'Incorrect message on /next after previous question just asked')

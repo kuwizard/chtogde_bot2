@@ -31,6 +31,13 @@ class DatabaseMock < Database
     end
   end
 
+  def set_sources_state(_mode, chat_id:, sources:)
+    value = sources ? 't' : 'f'
+    @data.each do |e|
+      e[:sources] = value if e[:chat_id] == chat_id
+    end
+  end
+
   def delete_random(_mode, chat_id:)
     @data.reject! { |e| e[:chat_id] == chat_id }
   end

@@ -29,7 +29,7 @@ class MessageParser
         if !%w(/start /stop /help).include?(message.text) && !@game_manager.on?(id)
           Reply.new(Constants::NOT_STARTED, id)
           # Check if user tries to raise answer without asked question
-        elsif !%w(/start /stop /help /next).include?(message.text) && !@game_manager.game(id).asked
+        elsif !%w(/start /stop /help /next /sources).include?(message.text) && !@game_manager.game(id).asked
           Reply.new(Constants::STARTED_NOT_ASKED, id)
         else
           case message.text
@@ -45,6 +45,8 @@ class MessageParser
               Reply.new(@game_manager.post_answer_to_game(id), id)
             when '/repeat'
               Reply.new(@game_manager.game(id).question, id)
+            when '/sources'
+              Reply.new(@game_manager.change_sources_state(id), id)
             else
               message_text = message.to_s.delete('/')
               check_result = @game_manager.check_suggestion_in_game(id, message_text)

@@ -17,7 +17,7 @@ module Common
     @reply = @processor.process_message(message)
   end
 
-  def send_button_click(button, from: nil)
+  def send_button_click(button)
     @message_id = Random.new.rand(999).to_s
     msg = Telegram::Bot::Types::Message.new(chat: @chat)
     message = Telegram::Bot::Types::CallbackQuery.new(data: button.callback_data, id: @message_id, message: msg, from: Users::TEST_USER)
@@ -31,5 +31,15 @@ module Common
   def erase_and_restore_all_games
     @processor.erase_all_games
     @processor.restore_previous_games
+  end
+
+  def add_bot_to_chat
+    message = Telegram::Bot::Types::Message.new(chat: @chat, from: Users::TEST_USER, new_chat_members: [Users::BOT])
+    @reply = @processor.process_message(message)
+  end
+
+  def remove_bot_from_chat
+    message = Telegram::Bot::Types::Message.new(chat: @chat, from: Users::TEST_USER, left_chat_member: Users::BOT)
+    @reply = @processor.process_message(message)
   end
 end

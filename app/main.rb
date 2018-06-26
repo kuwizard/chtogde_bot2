@@ -10,6 +10,6 @@ Telegram::Bot::Client.run(token) do |bot|
 
   bot.listen do |message|
     reply = processor.process_message(message)
-    processor.post_reply(reply)
+    processor.post_reply(reply) unless reply.nil?
   end
 end

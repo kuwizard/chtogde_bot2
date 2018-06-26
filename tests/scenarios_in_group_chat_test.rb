@@ -104,4 +104,26 @@ class ScenariosInGroupChatTest < Test::Unit::TestCase
     expected = "*Ответ (который кое-кто уже подсмотрел)*: Быть\n*Комментарий*: Замечательный комментарий."
     assert_equal(expected, @reply.message, 'Incorrect answer after anyone has cheated')
   end
+
+  def test_remove_bot_from_chat
+    send_message('/start')
+    remove_bot_from_chat
+    assert_nil(@reply, 'Reply is not nil after removing bot from chat')
+  end
+
+  def test_add_bot_to_chat
+    send_message('/start')
+    add_bot_to_chat
+    assert_nil(@reply, 'Reply is not nil after adding bot to chat')
+  end
+
+  def test_saving_progress_after_deleting_and_adding
+    send_message('/start')
+    send_message('/next')
+    remove_bot_from_chat
+    add_bot_to_chat
+    send_message('/answer')
+    expected = "*Ответ*: Быть\n*Комментарий*: Замечательный комментарий."
+    assert_equal(expected, @reply.message, 'Incorrect answer after deleting bot and adding back')
+  end
 end

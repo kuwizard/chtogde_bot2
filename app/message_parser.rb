@@ -22,7 +22,7 @@ class MessageParser
           fail "Cannot parse message.data '#{message.data}'"
         end
       when Telegram::Bot::Types::Message
-        return unless message.text.start_with?('/')
+        return if message.text.nil? || !message.text.start_with?('/')
         logger.info("#{message.text} is called in #{chat_name(message)}") unless ENV['TEST']
         id = message.chat.id
         # Check if user tries to play without starting

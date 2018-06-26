@@ -13,9 +13,12 @@ class DatabaseMock < Database
     @data.map { |e| e[:chat_id] }
   end
 
-  def get_question(_mode, chat_id:)
-    line = @data.find { |a| a[:chat_id] == chat_id }
-    line.inject({}) { |memo,(k,v)| memo[k.to_s] = v; memo} # Converting symbols to strings
+  def question(_mode, chat_id:)
+    chat(chat_id).inject({}) { |memo,(k,v)| memo[k.to_s] = v; memo} # Converting symbols to strings
+  end
+
+  def sources(chat_id:)
+    !@data.find { |a| a[:chat_id] == chat_id }[:sources].nil?
   end
 
   def save_asked(mode, chat_id:, tour_name:, question_id:)
@@ -40,5 +43,11 @@ class DatabaseMock < Database
 
   def delete_random(_mode, chat_id:)
     @data.reject! { |e| e[:chat_id] == chat_id }
+  end
+
+  private
+
+  def chat(id)
+    @data.find { |a| a[:chat_id] == id }
   end
 end

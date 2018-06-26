@@ -40,4 +40,14 @@ class RestoringFromDbTest < Test::Unit::TestCase
     send_message('/next')
     assert_nil(@reply.previous_answer, 'Previous answer is not nil after restoring from db')
   end
+
+  def test_sources_saved_after_restore
+    send_message('/start')
+    send_message('/next')
+    send_message('/sources')
+    erase_and_restore_all_games
+    send_message('/next')
+    expected = '*Источники*:'
+    assert_include(@reply.previous_answer, expected, 'Previous answer is not nil after restoring from db')
+  end
 end

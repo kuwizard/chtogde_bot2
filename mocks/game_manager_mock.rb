@@ -25,11 +25,13 @@ class GameManagerMock < GameManager
     games_of_random_mode = @db.list_of_games(:random)
     games_of_random_mode.each do |chat_id|
       chat_id = chat_id.to_i
-      question = @db.get_question(:random, chat_id: chat_id)
+      question = @db.question(:random, chat_id: chat_id)
+      sources = @db.sources(chat_id: chat_id)
       @games[chat_id] = GameMock.new(chat_id: chat_id,
                                  tour_name: question['tour_name'],
                                  question_id: question['question_id'],
                                  asked: question['asked'],
+                                 sources: sources,
                                  data_file: @data_file)
     end
   end

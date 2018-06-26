@@ -1,7 +1,7 @@
 class GameMock < Game
-  def initialize(chat_id:, tour_name: nil, question_id: nil, asked: false, data_file: nil)
+  def initialize(chat_id:, tour_name: nil, question_id: nil, asked: false, sources: false, data_file: nil)
     @question_collector = QuestionCollectorMock.new(data_file)
-    super(chat_id: chat_id, tour_name: tour_name, question_id: question_id, asked: asked)
+    super(chat_id: chat_id, tour_name: tour_name, question_id: question_id, asked: asked, sources: sources)
   end
 
   def set_data_file(name)

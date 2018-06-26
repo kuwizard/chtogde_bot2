@@ -15,16 +15,21 @@ class Database
     result.column_values(0).map(&:to_i)
   end
 
-  def get_question(mode, chat_id:)
-    result = @db.query("SELECT tour_name, question_id, asked, sources FROM #{mode_to_table(mode)} WHERE chat_id='#{chat_id}';")
+  def question(mode, chat_id:)
+    result = @db.query("SELECT tour_name, question_id, asked FROM #{mode_to_table(mode)} WHERE chat_id='#{chat_id}';")
     result[0]
+  end
+
+  def sources(chat_id:)
+    result = @db.query("SELECT sources FROM sources WHERE chat_id='#{chat_id}';")
+    !result.values.empty?
   end
 
   def save_asked(mode, chat_id:, tour_name:, question_id:)
     if list_of_games(mode).include?(chat_id)
       @db.query("UPDATE #{mode_to_table(mode)} SET tour_name = '#{tour_name}', question_id = '#{question_id}', asked = true WHERE chat_id = '#{chat_id}';")
     else
-      @db.query("INSERT INTO #{mode_to_table(mode)} (chat_id, tour_name, question_id, asked, sources) VALUES ('#{chat_id}', '#{tour_name}' ,'#{question_id}', true, false);")
+      @db.query("INSERT INTO #{mode_to_table(mode)} (chat_id, tour_name, question_id, asked) VALUES ('#{chat_id}', '#{tour_name}' ,'#{question_id}', true);")
     end
   end
 
@@ -33,7 +38,11 @@ class Database
   end
 
   def set_sources_state(mode, chat_id:, sources:)
-    @db.query("UPDATE #{mode_to_table(mode)} SET sources = #{sources} WHERE chat_id = '#{chat_id}';")
+    if sources
+      @db.query("INSERT INTO sources (chat_id) VALUES ('#{chat_id}');")
+    else
+      @db.query("DELETE FROM sources WHERE chat_id='#{chat_id}';")
+    end
   end
 
   def delete_random(mode, chat_id:)

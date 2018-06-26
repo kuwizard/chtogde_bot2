@@ -7,7 +7,7 @@ require_relative 'question'
 class Game
   attr_reader :asked, :question_has_photo, :sources
 
-  def initialize(chat_id:, tour_name: nil, question_id: nil, asked: false, sources: false)
+  def initialize(chat_id:, tour_name: nil, question_id: nil, asked: 'f', sources: false)
     @asked = false
     @sources = false
     @questions = []
@@ -16,7 +16,7 @@ class Game
     if tour_name && question_id # Which means we're restoring games from DB
       add_specific_question(tour_name: tour_name, question_id: question_id)
       @asked = asked == 't'
-      @sources = sources == 't'
+      @sources = sources
     else
       add_random_questions(1)
     end

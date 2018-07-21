@@ -8,6 +8,7 @@ class ScenariosInGroupChatTest < Test::Unit::TestCase
     @processor = BotProcessorMock.new
     @chat = Telegram::Bot::Types::Chat.new(type: 'group', id: '333', first_name: 'Group', last_name: 'User')
     change_question_to('two_questions_no_pass_criteria.xml')
+    send_message('/start')
   end
 
   def teardown
@@ -15,7 +16,6 @@ class ScenariosInGroupChatTest < Test::Unit::TestCase
   end
 
   def test_answer_correctly_in_group
-    send_message('/start')
     send_message('/next')
     send_message('/быть')
     expected = "*быть* - это правильный ответ!\n*Комментарий*: Замечательный комментарий."
@@ -24,7 +24,6 @@ class ScenariosInGroupChatTest < Test::Unit::TestCase
   end
 
   def test_repeat_in_group
-    send_message('/start')
     send_message('/next')
     send_message('/repeat')
     expected = '*Вопрос*: Быть или не быть?'
@@ -33,7 +32,6 @@ class ScenariosInGroupChatTest < Test::Unit::TestCase
   end
 
   def test_surrender_in_group
-    send_message('/start')
     send_message('/next')
     send_message('/answer')
     expected = "*Ответ*: Быть\n*Комментарий*: Замечательный комментарий."
@@ -42,7 +40,6 @@ class ScenariosInGroupChatTest < Test::Unit::TestCase
   end
 
   def test_next_on_asked_in_group
-    send_message('/start')
     send_message('/next')
     send_message('/next')
     expected = '*Вопрос*: Вопрос со звёздочкой'
@@ -52,13 +49,11 @@ class ScenariosInGroupChatTest < Test::Unit::TestCase
   end
 
   def test_three_buttons
-    send_message('/start')
     send_message('/next')
     assert_equal(3, @reply.buttons_count, 'Incorrect number of buttons in reply')
   end
 
   def test_tell_button
-    send_message('/start')
     send_message('/next')
     tell_button = @reply.tell_button
     assert_instance_of(Telegram::Bot::Types::InlineKeyboardButton, tell_button, 'Incorrect class of tell button')
@@ -67,14 +62,12 @@ class ScenariosInGroupChatTest < Test::Unit::TestCase
   end
 
   def test_responses_are_in_group_chat
-    send_message('/start')
     assert_equal(@chat.id, @reply.chat_id, 'Incorrect chat id start message was sent to, expected group chat id')
     send_message('/next')
     assert_equal(@chat.id, @reply.chat_id, 'Incorrect chat id next question was sent to, expected group chat id')
   end
 
   def test_tell_button_sends_answer
-    send_message('/start')
     send_message('/next')
     send_button_click(@reply.tell_button)
     expected = "*Ответ*: Быть\n*Комментарий*: Замечательный комментарий."
@@ -82,14 +75,12 @@ class ScenariosInGroupChatTest < Test::Unit::TestCase
   end
 
   def test_tell_button_sends_answer_privately
-    send_message('/start')
     send_message('/next')
     send_button_click(@reply.tell_button)
     assert_equal(Users::TEST_USER.id, @reply.chat_id, 'Incorrect chat id next question was sent to, expected private chat id')
   end
 
   def test_after_tell_bot_still_answers_to_group
-    send_message('/start')
     send_message('/next')
     send_button_click(@reply.tell_button)
     send_message('/answer')
@@ -97,7 +88,6 @@ class ScenariosInGroupChatTest < Test::Unit::TestCase
   end
 
   def test_others_can_see_comeone_cheated
-    send_message('/start')
     send_message('/next')
     send_button_click(@reply.tell_button)
     send_message('/answer')
@@ -106,19 +96,16 @@ class ScenariosInGroupChatTest < Test::Unit::TestCase
   end
 
   def test_remove_bot_from_chat
-    send_message('/start')
     remove_bot_from_chat
     assert_nil(@reply, 'Reply is not nil after removing bot from chat')
   end
 
   def test_add_bot_to_chat
-    send_message('/start')
     add_bot_to_chat
     assert_nil(@reply, 'Reply is not nil after adding bot to chat')
   end
 
   def test_saving_progress_after_deleting_and_adding
-    send_message('/start')
     send_message('/next')
     remove_bot_from_chat
     add_bot_to_chat

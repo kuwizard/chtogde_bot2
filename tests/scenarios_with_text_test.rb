@@ -8,6 +8,8 @@ class ScenariosWithTextTest < Test::Unit::TestCase
     @processor = BotProcessorMock.new
     @chat = Telegram::Bot::Types::Chat.new(type: 'private', id: '123', first_name: 'Test', last_name: 'User')
     change_question_to('two_questions_no_pass_criteria.xml')
+    send_message('/start')
+    send_message('/next')
   end
 
   def teardown
@@ -15,8 +17,6 @@ class ScenariosWithTextTest < Test::Unit::TestCase
   end
 
   def test_answer_incorrectly
-    send_message('/start')
-    send_message('/next')
     send_message('/фигня')
     expected = '*фигня* - это неправильный ответ.'
     assert_equal(expected, @reply.message, 'Incorrect message on incorrect answer')
@@ -24,8 +24,6 @@ class ScenariosWithTextTest < Test::Unit::TestCase
   end
 
   def test_answer_correctly_primary
-    send_message('/start')
-    send_message('/next')
     send_message('/быть')
     expected = "*быть* - это правильный ответ!\n*Комментарий*: Замечательный комментарий."
     assert_equal(expected, @reply.message, 'Incorrect message on correct answer')
@@ -33,8 +31,6 @@ class ScenariosWithTextTest < Test::Unit::TestCase
   end
 
   def test_answer_correctly_upcase
-    send_message('/start')
-    send_message('/next')
     send_message('/БЫТЬ')
     expected = "*БЫТЬ* - это правильный ответ!\n*Комментарий*: Замечательный комментарий."
     assert_equal(expected, @reply.message, 'Incorrect message on correct UPPERCASE answer')
@@ -42,8 +38,6 @@ class ScenariosWithTextTest < Test::Unit::TestCase
   end
 
   def test_repeat
-    send_message('/start')
-    send_message('/next')
     send_message('/repeat')
     expected = '*Вопрос*: Быть или не быть?'
     assert_equal(expected, @reply.message, 'Incorrect message on /repeat after answer')
@@ -51,8 +45,6 @@ class ScenariosWithTextTest < Test::Unit::TestCase
   end
 
   def test_surrender
-    send_message('/start')
-    send_message('/next')
     send_message('/answer')
     expected = "*Ответ*: Быть\n*Комментарий*: Замечательный комментарий."
     assert_equal(expected, @reply.message, 'Incorrect message on /answer')
@@ -60,8 +52,6 @@ class ScenariosWithTextTest < Test::Unit::TestCase
   end
 
   def test_next_on_asked_shows_next_question
-    send_message('/start')
-    send_message('/next')
     send_message('/next')
     expected = '*Вопрос*: Вопрос со звёздочкой'
     assert_equal(expected, @reply.message, 'Incorrect message on /next after previous question just asked')
@@ -71,8 +61,6 @@ class ScenariosWithTextTest < Test::Unit::TestCase
 
   def test_start_after_asked_does_not_erase_question
     send_message('/start')
-    send_message('/next')
-    send_message('/start')
     send_message('/быть')
     expected = "*быть* - это правильный ответ!\n*Комментарий*: Замечательный комментарий."
     assert_equal(expected, @reply.message, 'Incorrect message in case when we sent /start after question being asked')
@@ -80,16 +68,12 @@ class ScenariosWithTextTest < Test::Unit::TestCase
   end
 
   def test_next_after_surrender_does_not_contain_previous_answer
-    send_message('/start')
-    send_message('/next')
     send_message('/answer')
     send_message('/next')
     assert_nil(@reply.previous_answer, 'Previous answer is not nil')
   end
 
   def test_next_after_answer_shows_second_question
-    send_message('/start')
-    send_message('/next')
     send_message('/быть')
     send_message('/next')
     expected = '*Вопрос*: Вопрос со звёздочкой'
@@ -97,8 +81,6 @@ class ScenariosWithTextTest < Test::Unit::TestCase
   end
 
   def test_next_after_answer_does_not_have_previous_answer
-    send_message('/start')
-    send_message('/next')
     send_message('/быть')
     send_message('/next')
     assert_nil(@reply.previous_answer, 'Next after correct answer does not have previous answer')

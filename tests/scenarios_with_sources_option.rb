@@ -1,7 +1,7 @@
 require_relative 'common'
 
 # encoding: utf-8
-class ScenariosWithTextTest < Test::Unit::TestCase
+class ScenariosWithSourcesTest < Test::Unit::TestCase
   include Common
 
   def setup

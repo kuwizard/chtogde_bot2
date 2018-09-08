@@ -1,5 +1,5 @@
 require 'nokogiri'
-require_relative 'constants'
+require_relative '../constants'
 
 class Question
   attr_reader :text, :comment, :answers_trimmed, :answer_text, :answer_to_last_text, :photo, :tour_name, :id, :sources

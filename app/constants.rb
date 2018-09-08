@@ -14,13 +14,18 @@ TXT
   STARTED_NOT_ASKED = 'Не был задан вопрос, набери /next чтобы получить новый'
   SOURCES_NOW_ON = 'Вывод списка источников *включён*'
   SOURCES_NOW_OFF = 'Вывод списка источников *отключён*'
-  SWITCHED_TO_TOURS = ''
-  ALREADY_TOURS
-  SWITCHED_TO_RANDOM
-  ALREADY_RANDOM
+  SWITCHED_TO_TOURS = 'Успешно переключено в режим турниров'
+  ALREADY_TOURS = 'Уже в режиме турниров, ничего не изменилось'
+  SWITCHED_TO_RANDOM = 'Успешно переключено в режим случайных вопросов'
+  ALREADY_RANDOM = 'Уже в режиме случайных вопросов, ничего не изменилось'
 
   RANDOM_QUESTION_URL = 'https://db.chgk.info/xml/random/'
   TOUR_QUESTION_URL = 'https://db.chgk.info/tour/%tour_name/xml/'
   IMAGE_URL = 'http://db.chgk.info/images/db/'
   FILE_PATH = '../tests/data/'
+end
+
+module GameMode
+  RANDOM = :random
+  TOURS = :tours
 end

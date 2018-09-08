@@ -1,5 +1,5 @@
-require_relative 'game'
-require_relative 'db'
+require_relative 'objects/game'
+require_relative 'objects/db'
 
 class GameManager
   def initialize
@@ -71,5 +71,23 @@ class GameManager
     current_state = game(id).sources
     @db.set_sources_state(:random, chat_id: id, sources: current_state)
     current_state ? Constants::SOURCES_NOW_ON : Constants::SOURCES_NOW_OFF
+  end
+
+  def switch_to_tours(id)
+    if game(id).mode == GameMode::TOURS
+      Constants::ALREADY_TOURS
+    else
+      game(id).switch_to(GameMode::TOURS)
+      Constants::SWITCHED_TO_TOURS
+    end
+  end
+
+  def switch_to_random(id)
+    if game(id).mode == GameMode::RANDOM
+      Constants::ALREADY_RANDOM
+    else
+      game(id).switch_to(GameMode::RANDOM)
+      Constants::SWITCHED_TO_RANDOM
+    end
   end
 end

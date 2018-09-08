@@ -1,17 +1,19 @@
 require 'net/http'
 require 'logger'
 require 'unicode_utils'
-require_relative 'question_collector'
+require_relative '../question_collector'
 require_relative 'question'
+require_relative '../constants'
 
 class Game
-  attr_reader :asked, :question_has_photo, :sources
+  attr_reader :asked, :question_has_photo, :sources, :mode
 
   def initialize(chat_id:, tour_name: nil, question_id: nil, asked: 'f', sources: false)
     @asked = false
     @sources = false
     @questions = []
     @chat_id = chat_id
+    @mode = GameMode::RANDOM
     @question_collector ||= QuestionCollector.new
     if tour_name && question_id # Which means we're restoring games from DB
       add_specific_question(tour_name: tour_name, question_id: question_id)
@@ -64,6 +66,10 @@ class Game
 
   def change_sources_state
     @sources = !@sources
+  end
+
+  def switch_to(mode)
+    @mode = mode
   end
 
   private

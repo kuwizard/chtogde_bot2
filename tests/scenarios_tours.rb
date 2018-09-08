@@ -17,6 +17,30 @@ class ScenariosToursTest < Test::Unit::TestCase
   def test_switching_to_tours
     send_message('/start')
     send_message('/tours')
-    assert_equal(expected, @reply.message, '')
+    expected = Constants::SWITCHED_TO_TOURS
+    assert_equal(expected, @reply.message, 'Incorrect message while switching to tours')
+  end
+
+  def test_switching_to_tours_then_to_random
+    send_message('/start')
+    send_message('/tours')
+    send_message('/random')
+    expected = Constants::SWITCHED_TO_RANDOM
+    assert_equal(expected, @reply.message, 'Incorrect message while switching to random after tours')
+  end
+
+  def test_switching_to_random_after_start
+    send_message('/start')
+    send_message('/random')
+    expected = Constants::ALREADY_RANDOM
+    assert_equal(expected, @reply.message, 'Incorrect message while switching to random after start')
+  end
+
+  def test_switching_to_tours_twice
+    send_message('/start')
+    send_message('/tours')
+    send_message('/tours')
+    expected = Constants::ALREADY_TOURS
+    assert_equal(expected, @reply.message, 'Incorrect message while switching to tours twice')
   end
 end

@@ -1,4 +1,4 @@
-require_relative '../app/db'
+require_relative '../app/objects/db'
 
 class DatabaseMock < Database
   def initialize(data)

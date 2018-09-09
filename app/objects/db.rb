@@ -7,6 +7,10 @@ class Database
     db_name = ENV['DB_NAME']
     db_user = ENV['DB_USER']
     db_password = ENV['DB_PASSWORD']
+    if [ENV['DB_HOST'], ENV['DB_PORT'], ENV['DB_NAME'], ENV['DB_USER'], ENV['DB_PASSWORD']].any?(&:nil?)
+      regexp = /postgres:\/\/([a-z]+):([a-z0-9]+)@([a-z0-9\-.]+):([0-9]+)\/([a-z0-9]+)/
+      db_user, db_password, db_host, db_port, db_name = ENV['DATABASE_URL'].scan(regexp).first
+    end
     @db = PG.connect :host => db_host, :port => db_port, :dbname => db_name, :user => db_user, :password => db_password
   end
 

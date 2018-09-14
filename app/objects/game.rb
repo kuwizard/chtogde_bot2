@@ -3,7 +3,7 @@ require 'logger'
 require 'unicode_utils'
 require_relative '../question_collector'
 require_relative 'question'
-require_relative '../constants'
+require_relative '../misc/enums'
 
 class Game
   attr_reader :asked, :question_has_photo, :sources, :mode

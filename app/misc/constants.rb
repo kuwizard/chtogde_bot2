@@ -24,8 +24,3 @@ TXT
   IMAGE_URL = 'http://db.chgk.info/images/db/'
   FILE_PATH = '../tests/data/'
 end
-
-module GameMode
-  RANDOM = :random
-  TOURS = :tours
-end

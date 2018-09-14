@@ -1,6 +1,6 @@
 require 'nokogiri'
 require 'open-uri'
-require_relative 'constants'
+require_relative 'misc/constants'
 
 class QuestionCollector
   def random_questions(amount)

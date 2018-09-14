@@ -1,5 +1,7 @@
 require_relative 'game_manager'
 require_relative 'objects/reply'
+require_relative 'misc/enums'
+require_relative 'objects/keyboard'
 
 class MessageParser
   def initialize
@@ -81,12 +83,11 @@ class MessageParser
   end
 
   def keyboard(id, private)
-    kb = [Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Ответ', callback_data: "answer#{id}")]
-    unless private
-      kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: 'В личку', callback_data: "tell#{id}")
-    end
-    kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Следующий', callback_data: "next#{id}")
-    [kb]
+    buttons = Hash.new
+    buttons['Ответ'] = "answer#{id}"
+    buttons['В личку'] = "tell#{id}" unless private
+    buttons['Следующий'] = "next#{id}"
+    Keyboard.create(KbType::HORIZONTAL, buttons)
   end
 
   def private?(message)

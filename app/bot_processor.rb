@@ -25,7 +25,8 @@ class BotProcessor
       post_photo(reply.photo, chat_id)
     end
     if reply.markup
-      post_with_markup(reply.message, chat_id, reply.markup)
+      last_message = post_with_markup(reply.message, chat_id, reply.markup)
+      @last_message_id = last_message['result']['message_id']
     else
       post(reply.message, chat_id)
     end

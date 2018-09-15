@@ -50,7 +50,7 @@ class MessageParser
             when '/sources'
               Reply.new(@game_manager.change_sources_state(id), id)
             when '/tours'
-              Reply.new(@game_manager.switch_to_tours(id), id)
+              switch_to_tours(id)
             when '/random'
               Reply.new(@game_manager.switch_to_random(id), id)
             else
@@ -82,12 +82,24 @@ class MessageParser
     reply
   end
 
+  def switch_to_tours(id)
+    keyboard = Keyboard.new([
+      ['1', 'callback1'],
+      ['2', 'callback2'],
+      ['3', 'callback3'],
+      ['4', 'callback4'],
+      ['5', 'callback5'],
+      ['6', 'callback6']
+    ])
+    markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: keyboard.get)
+    Reply.new(@game_manager.switch_to_tours(id), id, markup: markup)
+  end
+
   def keyboard(id, private)
-    buttons = Hash.new
-    buttons['Ответ'] = "answer#{id}"
-    buttons['В личку'] = "tell#{id}" unless private
-    buttons['Следующий'] = "next#{id}"
-    Keyboard.create(KbType::HORIZONTAL, buttons)
+    buttons = [['Ответ',      "answer#{id}"]]
+    buttons << ['В личку',    "tell#{id}"] unless private
+    buttons << ['Следующий',  "next#{id}"]
+    Keyboard.new(buttons).get_horizontal
   end
 
   def private?(message)

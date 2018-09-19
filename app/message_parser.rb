@@ -9,6 +9,7 @@ class MessageParser
   def parse_message(message)
     case message
       when Telegram::Bot::Types::CallbackQuery
+        parse_message_data(message.data)
         if message.data.include?('answer')
           message.data.gsub!('answer', '')
           Reply.new(@game_manager.post_answer_to_game(message.data.to_i), message.data, callback_id: message.id)
@@ -77,11 +78,11 @@ class MessageParser
   end
 
   def keyboard(id, private)
-    kb = [Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Ответ', callback_data: "answer#{id}")]
+    kb = [Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Ответ', callback_data: "#{id}/answer")]
     unless private
-      kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: 'В личку', callback_data: "tell#{id}")
+      kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: 'В личку', callback_data: "#{id}/tell")
     end
-    kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Следующий', callback_data: "next#{id}")
+    kb << Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Следующий', callback_data: "#{id}/next_answer")
     [kb]
   end
 

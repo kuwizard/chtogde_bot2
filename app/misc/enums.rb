@@ -18,3 +18,10 @@ module Navigation
   NEXT = :next
   PREVIOUS = :previous
 end
+
+module MessageType
+  ANSWER = :answer
+  TELL = :tell
+  NEXT_QUESTION = :next_question
+  NAVIGATION = :navigation
+end

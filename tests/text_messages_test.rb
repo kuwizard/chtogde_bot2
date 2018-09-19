@@ -169,7 +169,7 @@ class TextMessagesTest < Test::Unit::TestCase
     send_message('/next')
     next_button = @reply.next_button
     assert_instance_of(Telegram::Bot::Types::InlineKeyboardButton, next_button, 'Incorrect class of next button')
-    assert_equal("#{@chat.id}/next_answer", next_button.callback_data, 'Incorrect callback data on next button')
+    assert_equal("#{@chat.id}/next_question", next_button.callback_data, 'Incorrect callback data on next button')
     assert_equal('Следующий', next_button.text, 'Incorrect text on next button')
   end
 

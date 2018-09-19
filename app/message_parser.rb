@@ -11,23 +11,20 @@ class MessageParser
   def parse_message(message)
     case message
       when Telegram::Bot::Types::CallbackQuery
-        parse_message_data(message.data)
-        if message.data.include?('answer')
-          message.data.gsub!('answer', '')
-          text = @game_manager.post_answer_to_game(message.data.to_i)
-          Reply.new(message: text, chat_id: message.data, callback_id: message.id)
-        elsif message.data.include?('tell')
-          message.data.gsub!('tell', '')
-          text = @game_manager.post_answer_to_game(message.data.to_i, mode: :i_am_a_cheater)
-          Reply.new(message: text, chat_id: message.from.id, callback_id: message.id)
-        elsif message.data.include?('next_question')
-          message.data.gsub!('next_question', '')
-          next_question(message.data.to_i, private?(message), callback_id: message.id)
-        elsif message.data.include?('navigation')
-          message.data.gsub!('navigation', '')
-          navigate_to(direction: message.data, chat_id: message.data.to_i)
-        else
-          fail "Cannot parse message.data '#{message.data}'"
+        chat_id, type, direction = parse_message_data(message.data)
+        case type
+          when MessageType::ANSWER
+            text = @game_manager.post_answer_to_game(message.data.to_i)
+            Reply.new(message: text, chat_id: chat_id, callback_id: message.id)
+          when MessageType::TELL
+            text = @game_manager.post_answer_to_game(message.data.to_i, mode: :i_am_a_cheater)
+            Reply.new(message: text, chat_id: message.from.id, callback_id: message.id)
+          when MessageType::NEXT_QUESTION
+            next_question(chat_id, private?(message), callback_id: message.id)
+          when MessageType::NAVIGATION
+            navigate_to(direction: direction, chat_id: chat_id)
+          else
+            fail "Incorrect message type '#{type}'"
         end
       when Telegram::Bot::Types::Message
         return if message.text.nil? || !message.text.start_with?('/')
@@ -105,9 +102,9 @@ class MessageParser
   end
 
   def keyboard(id, private)
-    buttons = [['Ответ',      "answer#{id}"]]
-    buttons << ['В личку',    "tell#{id}"] unless private
-    buttons << ['Следующий',  "next#{id}"]
+    buttons = [['Ответ',      "#{id}/answer"]]
+    buttons << ['В личку',    "#{id}/tell"] unless private
+    buttons << ['Следующий',  "#{id}/next_question"]
     Keyboard.new(buttons).get_horizontal
   end
 
@@ -124,6 +121,21 @@ class MessageParser
     else
       "group chat called '#{message.chat.title}'"
     end
+  end
+
+  def parse_message_data(data)
+    chat_id, type, direction = data.scan(/(\d+)\/([a-z_]+)(?:\/([a-z]+))?/).first
+    type = {
+      'answer' => MessageType::ANSWER,
+      'tell' => MessageType::TELL,
+      'next_question' => MessageType::NEXT_QUESTION,
+      'navigation' => MessageType::NAVIGATION
+    }.fetch(type)
+    direction = {
+      'prev' => Navigation::PREVIOUS,
+      'next' => Navigation::NEXT
+    }.fetch(direction) unless direction.nil?
+    [chat_id.to_i, type, direction]
   end
 
   def logger

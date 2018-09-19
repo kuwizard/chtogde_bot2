@@ -57,7 +57,7 @@ class ScenariosInGroupChatTest < Test::Unit::TestCase
     send_message('/next')
     tell_button = @reply.tell_button
     assert_instance_of(Telegram::Bot::Types::InlineKeyboardButton, tell_button, 'Incorrect class of tell button')
-    assert_equal("tell#{@chat.id}", tell_button.callback_data, 'Incorrect callback data on tell button')
+    assert_equal("#{@chat.id}/tell", tell_button.callback_data, 'Incorrect callback data on tell button')
     assert_equal('В личку', tell_button.text, 'Incorrect text on tell button')
   end
 

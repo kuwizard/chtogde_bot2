@@ -11,6 +11,7 @@ class MessageParser
   def parse_message(message)
     case message
       when Telegram::Bot::Types::CallbackQuery
+        parse_message_data(message.data)
         if message.data.include?('answer')
           message.data.gsub!('answer', '')
           text = @game_manager.post_answer_to_game(message.data.to_i)

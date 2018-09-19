@@ -14,13 +14,21 @@ class Keyboard
       @from ||= 0
       output = @buttons[@from, AMOUNT]
       if @from > 0
-        output.unshift(['⬅️', 'prev'])
+        output.unshift(['⬅️', 'navigationprev'])
       end
       if @from + AMOUNT < @buttons.count
-        output << ['➡️', 'next']
+        output << ['➡️', 'navigationnext']
       end
       buttons_map(output)
     end
+  end
+
+  def next
+    @from += AMOUNT
+  end
+
+  def previous
+    @from -= AMOUNT
   end
 
   def get_horizontal

@@ -7,3 +7,14 @@ module KbType
   HORIZONTAL = :horizontal
   VERTICAL = :vertical
 end
+
+module ReplyType
+  NEW = :new
+  EDIT = :edit
+  DELETE = :delete
+end
+
+module Navigation
+  NEXT = :next
+  PREVIOUS = :previous
+end

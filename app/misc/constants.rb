@@ -18,6 +18,7 @@ TXT
   ALREADY_TOURS = 'Уже в режиме турниров, ничего не изменилось'
   SWITCHED_TO_RANDOM = 'Успешно переключено в режим случайных вопросов'
   ALREADY_RANDOM = 'Уже в режиме случайных вопросов, ничего не изменилось'
+  CHOOSE_TOUR = 'Выберите турнир:'
 
   RANDOM_QUESTION_URL = 'https://db.chgk.info/xml/random/'
   TOUR_QUESTION_URL = 'https://db.chgk.info/tour/%tour_name/xml/'

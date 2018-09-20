@@ -72,6 +72,30 @@ class Game
     @mode = mode
   end
 
+  def tour_keyboard(direction: nil)
+    @keyboard ||= Keyboard.new([
+                                 ['1', 'callback1'],
+                                 ['2', 'callback2'],
+                                 ['3', 'callback3'],
+                                 ['4', 'callback4'],
+                                 ['5', 'callback5'],
+                                 ['6', 'callback6'],
+                                 ['7', 'callback7'],
+                                 ['8', 'callback8'],
+                                 ['9', 'callback9'],
+                                 ['10', 'callback10'],
+                               ], @chat_id)
+    case direction
+      when Navigation::PREVIOUS
+        @keyboard.previous
+      when Navigation::NEXT
+        @keyboard.next
+      else
+        raise("Incorrect direction '#{direction}'") unless direction.nil?
+    end
+    Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: @keyboard.get)
+  end
+
   private
 
   def match?(expected_raw, actual_array)

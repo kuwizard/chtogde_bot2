@@ -35,7 +35,7 @@ class BotProcessor
           post(reply.message, chat_id)
         end
       when ReplyType::EDIT
-        sleep 1
+        edit_markup(@last_message_id, chat_id, reply.markup)
       else
         raise("Unknown reply type #{reply.type}")
     end
@@ -49,6 +49,10 @@ class BotProcessor
 
   def post_with_markup(message, chat_id, markup)
     @bot.api.send_message(text: message, chat_id: chat_id, parse_mode: 'Markdown', reply_markup: markup)
+  end
+
+  def edit_markup(message_id, chat_id, markup)
+    @bot.api.edit_message_reply_markup(message_id: message_id, chat_id: chat_id, reply_markup: markup)
   end
 
   def post_photo(photo, id)

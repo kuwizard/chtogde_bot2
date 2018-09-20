@@ -87,25 +87,20 @@ class MessageParser
 
   def switch_to_tours(id)
     switched = @game_manager.switch_to_tours(id)
-    Reply.new(message: Constants::CHOOSE_TOUR, chat_id: id, markup: @game_manager.tour_keyboard(chat_id: id), previous_answer: switched)
+    markup = @game_manager.tour_keyboard(chat_id: id)
+    Reply.new(message: Constants::CHOOSE_TOUR, chat_id: id, markup: markup, previous_answer: switched)
   end
 
-  def navigate_to(direction)
-    direction = if direction == 'prev'
-                  Navigation::PREVIOUS
-                elsif direction == 'next'
-                  Navigation::NEXT
-                else
-                  raise("Incorrect direction '#{direction}'")
-                end
-    Reply.new(chat_id: id, markup: @game_manager.tour_keyboard(direction), type: ReplyType::EDIT)
+  def navigate_to(direction:, chat_id:)
+    markup = @game_manager.tour_keyboard(chat_id: chat_id, direction: direction)
+    Reply.new(chat_id: chat_id, markup: markup, type: ReplyType::EDIT)
   end
 
   def keyboard(id, private)
     buttons = [['Ответ',      "#{id}/answer"]]
     buttons << ['В личку',    "#{id}/tell"] unless private
     buttons << ['Следующий',  "#{id}/next_question"]
-    Keyboard.new(buttons).get_horizontal
+    Keyboard.new(buttons, id).get_horizontal
   end
 
   def private?(message)
@@ -124,7 +119,7 @@ class MessageParser
   end
 
   def parse_message_data(data)
-    chat_id, type, direction = data.scan(/(\d+)\/([a-z_]+)(?:\/([a-z]+))?/).first
+    chat_id, type, direction = data.scan(/^(-?\d+)\/([a-z_]+)(?:\/([a-z]+))?$/).first
     type = {
       'answer' => MessageType::ANSWER,
       'tell' => MessageType::TELL,

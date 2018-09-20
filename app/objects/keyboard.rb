@@ -3,8 +3,9 @@ require_relative '../misc/enums'
 class Keyboard
   AMOUNT = 5
 
-  def initialize(buttons)
+  def initialize(buttons, chat_id)
     @buttons = buttons
+    @chat_id = chat_id
   end
 
   def get
@@ -14,10 +15,10 @@ class Keyboard
       @from ||= 0
       output = @buttons[@from, AMOUNT]
       if @from > 0
-        output.unshift(['⬅️', 'navigationprev'])
+        output.unshift(['⬅️', "#{@chat_id}/navigation/prev"])
       end
       if @from + AMOUNT < @buttons.count
-        output << ['➡️', 'navigationnext']
+        output << ['➡️', "#{@chat_id}/navigation/next"]
       end
       buttons_map(output)
     end

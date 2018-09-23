@@ -15,6 +15,7 @@ class Game
     @chat_id = chat_id
     @mode = GameMode::RANDOM
     @question_collector ||= QuestionCollector.new
+    @previous_tours = []
     if tour_name && question_id # Which means we're restoring games from DB
       add_specific_question(tour_name: tour_name, question_id: question_id)
       @asked = asked == 't'
@@ -73,25 +74,22 @@ class Game
   end
 
   def tour_keyboard(direction: nil)
-    @keyboard ||= Keyboard.new([
-                                 ['1', 'callback1'],
-                                 ['2', 'callback2'],
-                                 ['3', 'callback3'],
-                                 ['4', 'callback4'],
-                                 ['5', 'callback5'],
-                                 ['6', 'callback6'],
-                                 ['7', 'callback7'],
-                                 ['8', 'callback8'],
-                                 ['9', 'callback9'],
-                                 ['10', 'callback10'],
-                               ], @chat_id)
-    case direction
-      when Navigation::PREVIOUS
-        @keyboard.previous
-      when Navigation::NEXT
-        @keyboard.next
-      else
-        raise("Incorrect direction '#{direction}'") unless direction.nil?
+    if Navigation.values.include?(direction)
+      case direction
+        when Navigation::PREVIOUS
+          @keyboard.previous
+        when Navigation::NEXT
+          @keyboard.next
+        when Navigation::LEVEL_UP
+          @keyboard = @previous_tours.pop
+        else
+          raise("Incorrect direction '#{direction}'")
+      end
+    else
+      @previous_tours << @keyboard unless @keyboard.nil?
+      buttons = @question_collector.tours_list(param: direction)
+      buttons = buttons.map { |button| [button.first, "#{@chat_id}/navigation/#{button.last}"] }
+      @keyboard = Keyboard.new(buttons, @chat_id, !@previous_tours.empty?)
     end
     Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: @keyboard.get)
   end

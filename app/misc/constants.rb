@@ -21,7 +21,7 @@ TXT
   CHOOSE_TOUR = 'Выберите турнир:'
 
   RANDOM_QUESTION_URL = 'https://db.chgk.info/xml/random/'
-  TOUR_QUESTION_URL = 'https://db.chgk.info/tour/%tour_name/xml/'
+  TOUR_URL = 'https://db.chgk.info/tour/%tour_name/xml/'
   IMAGE_URL = 'http://db.chgk.info/images/db/'
   FILE_PATH = '../tests/data/'
 end

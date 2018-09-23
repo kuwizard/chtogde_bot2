@@ -17,6 +17,11 @@ end
 module Navigation
   NEXT = :next
   PREVIOUS = :previous
+  LEVEL_UP = :level_up
+
+  def self.values
+    [NEXT, PREVIOUS, LEVEL_UP]
+  end
 end
 
 module MessageType

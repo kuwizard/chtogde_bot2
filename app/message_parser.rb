@@ -119,17 +119,23 @@ class MessageParser
   end
 
   def parse_message_data(data)
-    chat_id, type, direction = data.scan(/^(-?\d+)\/([a-z_]+)(?:\/([a-z]+))?$/).first
+    chat_id, type, direction = data.scan(/^(-?\d+)\/([a-z_]+)(?:\/([a-zA-Z0-9_]+))?$/).first
     type = {
       'answer' => MessageType::ANSWER,
       'tell' => MessageType::TELL,
       'next_question' => MessageType::NEXT_QUESTION,
       'navigation' => MessageType::NAVIGATION
     }.fetch(type)
-    direction = {
-      'prev' => Navigation::PREVIOUS,
-      'next' => Navigation::NEXT
-    }.fetch(direction) unless direction.nil?
+    direction = case direction
+                  when 'prev'
+                    Navigation::PREVIOUS
+                  when 'next'
+                    Navigation::NEXT
+                  when 'level_up'
+                    Navigation::LEVEL_UP
+                  else
+                    direction
+                end
     [chat_id.to_i, type, direction]
   end
 

@@ -94,4 +94,8 @@ class GameManager
   def tour_keyboard(chat_id:, direction: nil)
     game(chat_id).tour_keyboard(direction: direction)
   end
+
+  def tour_name(chat_id)
+    game(chat_id)
+  end
 end

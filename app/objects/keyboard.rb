@@ -10,16 +10,15 @@ class Keyboard
   end
 
   def get
-    buttons = []
-    buttons << level_up_arrow if @level_up
     if @buttons.count <= 5
-      buttons += @buttons
+      buttons = @buttons
     else
       @from ||= 0
-      buttons += @buttons[@from, MAX_AMOUNT]
+      buttons = @buttons[@from, MAX_AMOUNT]
       buttons << bottom_arrows(@from > 0, @from + MAX_AMOUNT < @buttons.count)
     end
-    buttons_map(buttons)
+    buttons.unshift(level_up_arrow) if @level_up && !buttons.empty?
+    buttons_map(buttons) unless buttons.empty?
   end
 
   def next

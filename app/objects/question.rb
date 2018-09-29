@@ -3,11 +3,10 @@ require_relative '../misc/constants'
 
 class Question
   attr_reader :text, :comment, :answers_trimmed, :answer_text, :answer_to_last_text, :photo, :tour_name, :id, :sources
-  @question_raw
 
-  def initialize(question_xml)
+  def initialize(question_xml, number_in_tour: '')
     @question_raw = question_xml
-    @text = "*Вопрос*: #{remove_shit(extract('Question'))}"
+    @text = "*Вопрос*#{number_in_tour}: #{remove_shit(extract('Question'))}"
     @comment = add_comment
     @answers_trimmed = all_answers(remove_shit(extract('Answer')), remove_shit(extract('PassCriteria')))
     @answer_text = "#{all_answers_to_text(@answers_trimmed)}\n#{@comment}"

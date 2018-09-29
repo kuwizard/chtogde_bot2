@@ -6,7 +6,7 @@ require_relative 'question'
 require_relative '../misc/enums'
 
 class Game
-  attr_reader :asked, :question_has_photo, :sources, :mode
+  attr_reader :asked, :question_has_photo, :sources, :mode, :tour_name
 
   def initialize(chat_id:, tour_name: nil, question_id: nil, asked: 'f', sources: false)
     @asked = false
@@ -28,8 +28,7 @@ class Game
   def new_question
     @asked = true
     @question_collector_thread.join unless @question_collector_thread.nil?
-    @question = @questions.first
-    @questions.shift
+    @question = @questions.shift
     @question_has_photo = !@question.photo.nil?
     add_random_questions(1)
     @question
@@ -71,6 +70,7 @@ class Game
 
   def switch_to(mode)
     @mode = mode
+    @questions = []
   end
 
   def tour_keyboard(direction: nil)
@@ -91,7 +91,13 @@ class Game
       buttons = buttons.map { |button| [button.first, "#{@chat_id}/navigation/#{button.last}"] }
       @keyboard = Keyboard.new(buttons, @chat_id, !@previous_tours.empty?)
     end
-    Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: @keyboard.get)
+    keyboard = @keyboard.get
+    if keyboard.nil?
+      add_tour(name: direction)
+      nil
+    else
+      Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: keyboard)
+    end
   end
 
   private
@@ -129,6 +135,12 @@ class Game
   def add_specific_question(tour_name:, question_id:)
     @questions << @question_collector.specific_question(tour_name: tour_name, question_id: question_id)
     new_question.text
+  end
+
+  def add_tour(name:)
+    # @question_collector_thread = Thread.new do
+    @questions, @tour_name = @question_collector.all_questions_and_name(tour_name: name)
+    # end
   end
 
   def cheated_text

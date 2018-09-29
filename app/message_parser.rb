@@ -22,7 +22,12 @@ class MessageParser
           when MessageType::NEXT_QUESTION
             next_question(chat_id, private?(message), callback_id: message.id)
           when MessageType::NAVIGATION
-            navigate_to(direction: direction, chat_id: chat_id)
+            nav_success = navigate_to(direction: direction, chat_id: chat_id)
+            if nav_success.type == ReplyType::DELETE
+              next_question(chat_id, private?(message), callback_id: message.id, delete_previous: true)
+            else
+              nav_success
+            end
           else
             fail "Incorrect message type '#{type}'"
         end
@@ -69,12 +74,13 @@ class MessageParser
 
   private
 
-  def next_question(id, private, callback_id: nil)
+  def next_question(id, private, callback_id: nil, delete_previous: false)
     if @game_manager.game(id).asked
       previous_answer = @game_manager.post_answer_to_game(id, mode: :to_last)
     end
     new_question = @game_manager.new_question_for_game(id)
-    reply = Reply.new(message: new_question, chat_id: id, previous_answer: previous_answer)
+    reply_type = delete_previous ? ReplyType::DELETE : ReplyType::NEW
+    reply = Reply.new(message: new_question, chat_id: id, previous_answer: previous_answer, type: reply_type)
     reply.markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: keyboard(id, private))
     if @game_manager.game(id).question_has_photo
       reply.photo = @game_manager.game(id).photo
@@ -93,7 +99,12 @@ class MessageParser
 
   def navigate_to(direction:, chat_id:)
     markup = @game_manager.tour_keyboard(chat_id: chat_id, direction: direction)
-    Reply.new(chat_id: chat_id, markup: markup, type: ReplyType::EDIT)
+    if markup.nil?
+      new_message = "#{Constants::CHOSEN_TOUR} '#{@game_manager.tour_name(chat_id)}'"
+      Reply.new(chat_id: chat_id, message: new_message, type: ReplyType::DELETE)
+    else
+      Reply.new(chat_id: chat_id, markup: markup, type: ReplyType::EDIT)
+    end
   end
 
   def keyboard(id, private)
@@ -119,7 +130,7 @@ class MessageParser
   end
 
   def parse_message_data(data)
-    chat_id, type, direction = data.scan(/^(-?\d+)\/([a-z_]+)(?:\/([a-zA-Z0-9_]+))?$/).first
+    chat_id, type, direction = data.scan(/^(-?\d+)\/([a-z_]+)(?:\/([a-zA-Z0-9_.]+))?$/).first
     type = {
       'answer' => MessageType::ANSWER,
       'tell' => MessageType::TELL,

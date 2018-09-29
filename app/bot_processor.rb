@@ -17,27 +17,28 @@ class BotProcessor
   def post_reply(reply)
     chat_id = reply.chat_id
 
-    case reply.type
-      when ReplyType::NEW
-        if reply.callback_id
-          answer_callback(reply.callback_id)
-        end
-        if reply.previous_answer
-          post(reply.previous_answer, chat_id)
-        end
-        if reply.photo
-          post_photo(reply.photo, chat_id)
-        end
-        if reply.markup
-          last_message = post_with_markup(reply.message, chat_id, reply.markup)
-          @last_message_id = last_message['result']['message_id']
-        else
-          post(reply.message, chat_id)
-        end
-      when ReplyType::EDIT
-        edit_markup(@last_message_id, chat_id, reply.markup)
+    if reply.type == ReplyType::EDIT
+      edit_markup(@last_message_id, chat_id, reply.markup)
+    else
+      if reply.callback_id
+        answer_callback(reply.callback_id)
+      end
+      if reply.type == ReplyType::DELETE
+        delete_message(@last_message_id, chat_id)
+      end
+      # TODO: Make previous answer a Reply object and change this to recursion
+      if reply.previous_answer
+        post(reply.previous_answer, chat_id)
+      end
+      if reply.photo
+        post_photo(reply.photo, chat_id)
+      end
+      if reply.markup
+        last_message = post_with_markup(reply.message, chat_id, reply.markup)
+        @last_message_id = last_message['result']['message_id']
       else
-        raise("Unknown reply type #{reply.type}")
+        post(reply.message, chat_id)
+      end
     end
   end
 
@@ -57,6 +58,10 @@ class BotProcessor
 
   def post_photo(photo, id)
     @bot.api.send_photo(photo: photo, chat_id: id)
+  end
+
+  def delete_message(message_id, chat_id)
+    @bot.api.delete_message(message_id: message_id, chat_id: chat_id)
   end
 
   def answer_callback(id)

@@ -79,6 +79,9 @@ class MessageParser
       previous_answer = @game_manager.post_answer_to_game(id, mode: :to_last)
     end
     new_question = @game_manager.new_question_for_game(id)
+    if new_question.nil?
+      return Reply.new(message: Constants::TOUR_FINISHED, chat_id: id)
+    end
     reply_type = delete_previous ? ReplyType::DELETE : ReplyType::NEW
     reply = Reply.new(message: new_question, chat_id: id, previous_answer: previous_answer, type: reply_type)
     reply.markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: keyboard(id, private))

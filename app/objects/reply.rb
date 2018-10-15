@@ -28,4 +28,13 @@ class Reply
   def buttons_count
     @markup.inline_keyboard[0].count
   end
+
+  def tour(index)
+    index += 1 if @markup.inline_keyboard[0][0].text == '⬆️'
+    @markup.inline_keyboard[index][0]
+  end
+
+  def up_button
+    
+  end
 end

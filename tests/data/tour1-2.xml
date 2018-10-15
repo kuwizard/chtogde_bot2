@@ -1,0 +1,73 @@
+<tournament>
+  <Id>4</Id>
+  <ParentId>1</ParentId>
+  <Title>Второй тур первого турнира</Title>
+  <Number/>
+  <TextId>tour1-2</TextId>
+  <QuestionsNum>2</QuestionsNum>
+  <Complexity/>
+  <Type>Ч</Type>
+  <Copyright/>
+  <Info/>
+  <URL/>
+  <FileName>tour1-2.xml</FileName>
+  <RatingId/>
+  <Editors/>
+  <EnteredBy/>
+  <LastUpdated>2017-11-27 23:09:04</LastUpdated>
+  <PlayedAt>1993-11-14</PlayedAt>
+  <PlayedAt2>1993-11-14</PlayedAt2>
+  <KandId/>
+  <CreatedAt>2003-07-19</CreatedAt>
+  <ParentTextId>tour1</ParentTextId>
+  <ProcessedBy/>
+  <ChildrenNum>2</ChildrenNum>
+  <question>
+    <QuestionId>659994</QuestionId>
+    <ParentId>39342</ParentId>
+    <Number>1</Number>
+    <Type>Ч</Type>
+    <TypeNum>1</TypeNum>
+    <TextId>tour1-2-1</TextId>
+    <Question>
+      Первый вопрос второго тура
+    </Question>
+    <Answer>Ответ на первый вопрос.</Answer>
+    <PassCriteria>Тоже вариант</PassCriteria>
+    <Authors>Более умный автор</Authors>
+    <Sources/>
+    <Comments/>
+    <Rating/>
+    <RatingNumber/>
+    <Complexity/>
+    <Topic/>
+    <ProcessedBySearch/>
+    <parent_text_id>tour1-2</parent_text_id>
+    <ParentTextId>tour1-2</ParentTextId>
+    <Notices> </Notices>
+  </question>
+  <question>
+    <QuestionId>659994</QuestionId>
+    <ParentId>39342</ParentId>
+    <Number>1</Number>
+    <Type>Ч</Type>
+    <TypeNum>1</TypeNum>
+    <TextId>tour1-2-2</TextId>
+    <Question>
+      Второй вопрос второго тура
+    </Question>
+    <Answer>Ответ на второй вопрос.</Answer>
+    <PassCriteria/>
+    <Authors>Ещё более умный автор</Authors>
+    <Sources/>
+    <Comments/>
+    <Rating/>
+    <RatingNumber/>
+    <Complexity/>
+    <Topic/>
+    <ProcessedBySearch/>
+    <parent_text_id>tour1-2</parent_text_id>
+    <ParentTextId>tour1-2</ParentTextId>
+    <Notices> </Notices>
+  </question>
+</tournament>

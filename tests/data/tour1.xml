@@ -1,0 +1,75 @@
+<tournament>
+  <Id>1</Id>
+  <ParentId>0</ParentId>
+  <Title>Турнир первый</Title>
+  <Number/>
+  <TextId>tour1</TextId>
+  <QuestionsNum>301</QuestionsNum>
+  <Complexity/>
+  <Type>Г</Type>
+  <Copyright/>
+  <Info/>
+  <URL/>
+  <FileName>tour1</FileName>
+  <RatingId/>
+  <Editors/>
+  <EnteredBy/>
+  <LastUpdated>2017-11-27 23:09:05</LastUpdated>
+  <PlayedAt/>
+  <PlayedAt2/>
+  <KandId/>
+  <CreatedAt>2016-01-20</CreatedAt>
+  <ParentTextId/>
+  <ProcessedBy/>
+  <ChildrenNum>3</ChildrenNum>
+  <tour>
+    <Id>3</Id>
+    <ParentId>1</ParentId>
+    <Title>Первый тур</Title>
+    <Number/>
+    <TextId>tour1-1</TextId>
+    <QuestionsNum>1</QuestionsNum>
+    <Complexity/>
+    <Type>Ч</Type>
+    <Copyright/>
+    <Info/>
+    <URL/>
+    <FileName>tour1-1.txt</FileName>
+    <RatingId/>
+    <Editors/>
+    <EnteredBy/>
+    <LastUpdated>2017-11-27 23:09:04</LastUpdated>
+    <PlayedAt>1993-11-14</PlayedAt>
+    <PlayedAt2>1993-11-14</PlayedAt2>
+    <KandId/>
+    <CreatedAt>2003-07-19</CreatedAt>
+    <ParentTextId>tour1</ParentTextId>
+    <ProcessedBy/>
+    <ChildrenNum>1</ChildrenNum>
+  </tour>
+  <tour>
+    <Id>3</Id>
+    <ParentId>1</ParentId>
+    <Title>Второй тур</Title>
+    <Number/>
+    <TextId>tour1-2</TextId>
+    <QuestionsNum>2</QuestionsNum>
+    <Complexity/>
+    <Type>Ч</Type>
+    <Copyright/>
+    <Info/>
+    <URL/>
+    <FileName>tour1-2.txt</FileName>
+    <RatingId/>
+    <Editors/>
+    <EnteredBy/>
+    <LastUpdated>2017-11-27 23:09:04</LastUpdated>
+    <PlayedAt>1993-11-14</PlayedAt>
+    <PlayedAt2>1993-11-14</PlayedAt2>
+    <KandId/>
+    <CreatedAt>2003-07-19</CreatedAt>
+    <ParentTextId>tour1</ParentTextId>
+    <ProcessedBy/>
+    <ChildrenNum>2</ChildrenNum>
+  </tour>
+</tournament>

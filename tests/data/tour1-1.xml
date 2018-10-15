@@ -1,0 +1,49 @@
+<tournament>
+  <Id>3</Id>
+  <ParentId>1</ParentId>
+  <Title>Первый тур первого турнира</Title>
+  <Number/>
+  <TextId>tour1-1</TextId>
+  <QuestionsNum>1</QuestionsNum>
+  <Complexity/>
+  <Type>Ч</Type>
+  <Copyright/>
+  <Info/>
+  <URL/>
+  <FileName>tour1-1.xml</FileName>
+  <RatingId/>
+  <Editors/>
+  <EnteredBy/>
+  <LastUpdated>2017-11-27 23:09:04</LastUpdated>
+  <PlayedAt>1993-11-14</PlayedAt>
+  <PlayedAt2>1993-11-14</PlayedAt2>
+  <KandId/>
+  <CreatedAt>2003-07-19</CreatedAt>
+  <ParentTextId>tour1</ParentTextId>
+  <ProcessedBy/>
+  <ChildrenNum>1</ChildrenNum>
+  <question>
+    <QuestionId>659994</QuestionId>
+    <ParentId>39342</ParentId>
+    <Number>1</Number>
+    <Type>Ч</Type>
+    <TypeNum>1</TypeNum>
+    <TextId>tour1-1-1</TextId>
+    <Question>
+      Первый и единственный вопрос первого турнира
+    </Question>
+    <Answer>Ответ на первый вопрос.</Answer>
+    <PassCriteria/>
+    <Authors>Очень умный автор</Authors>
+    <Sources/>
+    <Comments>Комментарий к первому всему</Comments>
+    <Rating/>
+    <RatingNumber/>
+    <Complexity/>
+    <Topic/>
+    <ProcessedBySearch/>
+    <parent_text_id>tour1-1</parent_text_id>
+    <ParentTextId>tour1-1</ParentTextId>
+    <Notices> </Notices>
+  </question>
+</tournament>

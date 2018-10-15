@@ -62,6 +62,7 @@ class GameManager
 
   def new_question_for_game(id)
     new_question = game(id).new_question
+    return nil if new_question.nil?
     @db.save_asked(:random, chat_id: id, tour_name: new_question.tour_name, question_id: new_question.id)
     new_question.text
   end

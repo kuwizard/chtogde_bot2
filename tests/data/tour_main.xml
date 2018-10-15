@@ -1,0 +1,53 @@
+<tournament>
+  <Id>0</Id>
+  <tour>
+    <Id>1</Id>
+    <ParentId>0</ParentId>
+    <Title>Турнир первый</Title>
+    <Number/>
+    <TextId>tour1</TextId>
+    <QuestionsNum>22293</QuestionsNum>
+    <Complexity/>
+    <Type>Г</Type>
+    <Copyright/>
+    <Info/>
+    <URL/>
+    <FileName>tour1</FileName>
+    <RatingId/>
+    <Editors/>
+    <EnteredBy/>
+    <LastUpdated>2018-09-15 16:48:02</LastUpdated>
+    <PlayedAt/>
+    <PlayedAt2/>
+    <KandId/>
+    <CreatedAt>2018-09-15</CreatedAt>
+    <ParentTextId/>
+    <ProcessedBy/>
+    <ChildrenNum>3</ChildrenNum>
+  </tour>
+  <tour>
+    <Id>2</Id>
+    <ParentId>0</ParentId>
+    <Title>Турнир второй</Title>
+    <Number/>
+    <TextId>tour2</TextId>
+    <QuestionsNum>62568</QuestionsNum>
+    <Complexity/>
+    <Type>Г</Type>
+    <Copyright/>
+    <Info/>
+    <URL/>
+    <FileName>INTER</FileName>
+    <RatingId/>
+    <Editors/>
+    <EnteredBy/>
+    <LastUpdated>2018-10-02 02:46:14</LastUpdated>
+    <PlayedAt/>
+    <PlayedAt2/>
+    <KandId/>
+    <CreatedAt>2018-10-02</CreatedAt>
+    <ParentTextId/>
+    <ProcessedBy/>
+    <ChildrenNum>3</ChildrenNum>
+  </tour>
+</tournament>

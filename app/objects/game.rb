@@ -26,11 +26,11 @@ class Game
   end
 
   def new_question
-    @asked = true
     @question_collector_thread.join unless @question_collector_thread.nil?
     @question = @questions.shift
-    @question_has_photo = !@question.photo.nil?
-    add_random_questions(1)
+    @question_has_photo = !@question&.photo.nil?
+    add_random_questions(1) unless @mode == GameMode::TOURS
+    @asked = true unless @question.nil?
     @question
   end
 

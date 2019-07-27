@@ -17,7 +17,7 @@ class ScenariosWithButtonsTest < Test::Unit::TestCase
   end
 
   def test_two_buttons
-    assert_equal(2, @reply.buttons_count, 'Incorrect number of buttons in reply')
+    assert_equal(2, @reply.horizontal_buttons_count, 'Incorrect number of buttons in reply')
   end
 
   def test_answer_button

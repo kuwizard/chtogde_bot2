@@ -50,7 +50,7 @@ class ScenariosInGroupChatTest < Test::Unit::TestCase
 
   def test_three_buttons
     send_message('/next')
-    assert_equal(3, @reply.buttons_count, 'Incorrect number of buttons in reply')
+    assert_equal(3, @reply.horizontal_buttons_count, 'Incorrect number of buttons in reply')
   end
 
   def test_tell_button

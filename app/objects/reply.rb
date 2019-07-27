@@ -14,27 +14,36 @@ class Reply
   end
 
   def answer_button
-    @markup.inline_keyboard[0].find { |button| button.callback_data.include?('answer') }
+    button_with_text('Ответ')
   end
 
   def next_button
-    @markup.inline_keyboard[0].find { |button| button.callback_data.include?('next_question') }
+    button_with_text('Следующий')
   end
 
   def tell_button
-    @markup.inline_keyboard[0].find { |button| button.callback_data.include?('tell') }
+    button_with_text('В личку')
   end
 
-  def buttons_count
+  def horizontal_buttons_count
     @markup.inline_keyboard[0].count
   end
 
-  def tour(index)
-    index += 1 if @markup.inline_keyboard[0][0].text == '⬆️'
-    @markup.inline_keyboard[index][0]
+  def up_button
+    button_with_text('⬆️')
   end
 
-  def up_button
-    
+  def prev_page_button
+    button_with_text('⬅️')
+  end
+
+  def next_page_button
+    button_with_text('➡️')
+  end
+
+  def button_with_text(text)
+    button = @markup.inline_keyboard.flatten.find { |b| b.text == text }
+    raise("Cannot find tour '#{text}'") if button.nil?
+    button
   end
 end
